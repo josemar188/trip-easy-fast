@@ -24,6 +24,7 @@
     --body: "Manrope", "Helvetica Neue", Arial, sans-serif;
     --mono: "DM Mono", ui-monospace, Menlo, monospace;
   }
+  .doc { --ink: #1a0d20; --deep: #3d1c46; --glow: #7a3f83; --bg: #f5f3f6; --soft: #f8f5f9; }
   .bus { --ink: #0a1f1b; --deep: #133f36; --glow: #1f6b58; --bg: #f2f5f3; --soft: #f4f7f5; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   [hidden] { display: none !important; }
@@ -39,6 +40,8 @@
   .brand b { font-family: var(--display); font-style: italic; font-weight: 500; font-size: 22px; letter-spacing: -.2px; }
   .brand b span { font-family: var(--body); font-style: normal; font-weight: 800; font-size: 11px; letter-spacing: 3px; color: var(--gold); margin-left: 4px; vertical-align: 3px; }
   .brand small { font-size: 11px; letter-spacing: 1.5px; color: rgba(255,255,255,.6); }
+  .brand b { white-space: nowrap; }
+  @media (max-width: 440px) { .brand { flex-direction: column; align-items: flex-start; gap: 0; } .brand small { font-size: 10px; } }
   .mode { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 99px; border: 1px solid rgba(201,164,92,.45); color: var(--gold-2); font-size: 10.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
   .mode svg { width: 13px; height: 13px; fill: currentColor; }
   .hello { position: relative; z-index: 1; margin-top: 34px; }
@@ -113,6 +116,16 @@
   .note { display: flex; gap: 12px; align-items: flex-start; margin-top: 12px; padding: 14px 16px; border-radius: 16px; background: #fbf6ea; border: 1px solid #ecdcb4; color: #5b4618; font-size: 13.5px; line-height: 1.5; }
   .note svg { flex: none; width: 18px; height: 18px; margin-top: 1px; fill: var(--gold-ink); }
   .note b { color: #3f300c; }
+  .dtitle { position: relative; z-index: 1; margin-top: 30px; }
+  .dtitle .name { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.62); }
+  .dtitle .big { margin-top: 8px; font-family: var(--display); font-weight: 600; font-size: clamp(30px, 8.5vw, 46px); line-height: 1.05; letter-spacing: -.6px; text-wrap: balance; overflow-wrap: anywhere; }
+  .flist { padding: 6px 0; }
+  .fr { display: flex; align-items: center; gap: 14px; padding: 14px 20px; border-top: 1px solid var(--line); }
+  .fr:first-child { border-top: 0; }
+  .fr .fi { flex: 1; min-width: 0; }
+  .fr .fn { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .fr .fs { font-size: 12px; color: var(--muted); }
+  .fr .btn { width: auto; flex: none; padding: 10px 18px; font-size: 13px; }
   footer { padding: 36px 0 calc(env(safe-area-inset-bottom, 0px) + 36px); text-align: center; }
   footer b { font-family: var(--display); font-style: italic; font-weight: 500; font-size: 17px; }
   footer p { margin-top: 4px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
@@ -127,6 +140,10 @@
   .none .btn { max-width: 300px; margin: 0 auto; }
   .none small { display: block; margin-top: 14px; font-size: 12px; color: var(--muted); }
   .ld main, .ld .hello, .ld .route { visibility: hidden; }
+  #sheet { position: fixed; inset: 0; z-index: 50; display: flex; align-items: flex-end; justify-content: center; background: rgba(11,22,38,.45); padding: 16px; }
+  #sheet .sh-in { width: 100%; max-width: 480px; background: var(--card); border-radius: 22px; padding: 22px; padding-bottom: calc(22px + env(safe-area-inset-bottom, 0px)); box-shadow: 0 -10px 40px rgba(11,22,38,.25); }
+  #sheet input { display: block; width: 100%; margin: 10px 0 12px; padding: 12px 10px; letter-spacing: -.3px; font-family: var(--mono); font-size: 16px; color: var(--text); background: var(--soft); border: 1px solid var(--line); border-radius: 12px; -webkit-user-select: text; user-select: text; }
+  #sheet p { font-size: 14px; color: var(--muted); margin-bottom: 14px; }
 
   @media (min-width: 700px) {
     .pass .main { grid-template-columns: repeat(3, 1fr); }
@@ -156,6 +173,7 @@
         <div class="eyebrow" id="eyebrow">Reserva pendente</div>
         <h1 id="hello">A <em>proposta</em> da sua viagem</h1>
       </div>
+      <div class="dtitle" id="dtitle" hidden><div class="name">Documento tratado</div><div class="big" id="dtt"></div></div>
       <div class="route">
         <div class="city"><div class="code" id="co"></div><div class="name" id="on">Origem</div></div>
         <div class="path"><svg id="path" viewBox="0 0 200 64" preserveAspectRatio="none" aria-hidden="true"></svg></div>
@@ -178,6 +196,11 @@
       </div>
     </div>
 
+    <section id="files" hidden>
+      <div class="sh"><h2>Os seus <em>documentos</em></h2><span id="fcount"></span></div>
+      <div class="card flist" id="flist"></div>
+    </section>
+
     <section>
       <div class="sh"><h2>Valores</h2><span>Em euros</span></div>
       <div class="card prices">
@@ -187,7 +210,7 @@
         <div class="row d" id="r4"><span>Desconto</span><b id="v4"></b></div>
         <div class="total"><span>Total a pagar</span><b id="total"></b></div>
       </div>
-      <div class="note" role="note">
+      <div class="note" role="note" id="pnote">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm-1 9v6h2v-6h-2zm0-4v2h2V7h-2z"/></svg>
         <p><b>Preço ainda não garantido.</b> Os valores podem mudar até a reserva ser paga, porque dependem da disponibilidade da <span id="carrier">companhia aérea</span>. Ao pagar, o preço fica confirmado.</p>
       </div>
@@ -254,10 +277,44 @@
     $('hello').innerHTML = 'Não encontrámos <em>esta viagem</em>';
     document.title = 'Trip Easy Fast'; return;
   }
+  const isDoc = t.tp === 'documentos';
   const bus = t.tp === 'autocarro';
+  if (isDoc) {
+    document.body.classList.add('doc'); document.querySelector('meta[name=theme-color]').content = '#1a0d20';
+    const first0 = String(t.cl || '').trim().split(/\s+/)[0];
+    $('mode').innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V9h5.5L13 3.5zM8 13v2h8v-2H8zm0 4v2h5v-2H8z"/></svg>Documentos';
+    $('eyebrow').textContent = t.cl ? 'Documentação · ' + t.cl : 'Documentação';
+    $('hello').innerHTML = first0 ? 'Olá ' + first0.replace(/[<>&]/g, '') + ', a sua <em>documentação</em> está tratada' : 'A sua <em>documentação</em> está tratada';
+    document.querySelector('.route').hidden = true; $('dtitle').hidden = false; $('dtt').textContent = t.dn || 'Documentos';
+    const dd = String(t.dd || '').split('-');
+    $('dt').previousElementSibling.textContent = 'Concluído em'; $('dt').textContent = dd.length === 3 ? dd[2] + '/' + dd[1] + '/' + dd[0] : '—';
+    $('hr').parentElement.hidden = true;
+    $('ref').textContent = q && q.length <= 12 ? q.toUpperCase() : '—';
+    if (t.nt) { document.querySelector('.stub .lbl').textContent = 'Notas'; $('bg').textContent = t.nt; document.querySelector('.stub .ic').innerHTML = '<svg viewBox="0 0 24 24"><path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V9h5.5L13 3.5zM8 13v2h8v-2H8zm0 4v2h5v-2H8z"/></svg>'; }
+    else { document.querySelector('.stub').hidden = true; document.querySelector('.perf').hidden = true; }
+    const fl = t.docs || [];
+    if (fl.length) {
+      $('files').hidden = false; $('fcount').textContent = fl.length + (fl.length === 1 ? ' ficheiro' : ' ficheiros');
+      const kb = n => n > 1048576 ? (n / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+      fl.forEach(f => {
+        const r = document.createElement('div'); r.className = 'fr';
+        r.innerHTML = '<span class="ic"><svg viewBox="0 0 24 24"><path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V9h5.5L13 3.5zM8 13v2h8v-2H8zm0 4v2h5v-2H8z"/></svg></span>';
+        const i = document.createElement('div'); i.className = 'fi';
+        const n = document.createElement('div'); n.className = 'fn'; n.textContent = f.name;
+        const s = document.createElement('div'); s.className = 'fs'; s.textContent = (/pdf/i.test(f.type || f.name) ? 'PDF' : 'Imagem') + ' · ' + kb(f.size || 0);
+        i.append(n, s);
+        const a = document.createElement('a'); a.className = 'btn ghost'; a.href = f.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = 'Abrir';
+        r.append(i, a); $('flist').appendChild(r);
+      });
+    }
+    document.querySelector('#r1 span').textContent = 'Serviço'; document.querySelector('#r2 span').textContent = 'Taxas oficiais'; document.querySelector('#r3 span').textContent = 'Outros custos';
+    $('pnote').hidden = true;
+    $('foot').textContent = 'by Josemar Lima · Obrigado pela confiança';
+  }
   if (bus) { document.body.classList.add('bus'); document.querySelector('meta[name=theme-color]').content = '#0a1f1b'; }
   const eur = n => (Number(n) || 0).toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
   const first = String(t.cl || '').trim().split(/\s+/)[0];
+  if (!isDoc) {
   $('mode').innerHTML = '<svg viewBox="0 0 24 24">' + (bus ? BUS : PLANE) + '</svg>' + (bus ? 'Autocarro' : 'Avião');
   $('eyebrow').textContent = t.cl ? 'Reserva pendente · ' + t.cl : 'Reserva pendente';
   $('hello').innerHTML = first ? 'Olá ' + first.replace(/[<>&]/g, '') + ', aqui está a <em>proposta</em> da sua viagem' : 'A <em>proposta</em> da sua viagem';
@@ -279,6 +336,7 @@
   $('hr').textContent = t.hr || '—';
   $('ref').textContent = q && q.length <= 12 ? q.toUpperCase() : '—';
   $('bg').textContent = t.bg || '—';
+  }
   const v = [t.v, t.to, t.tc, t.ds].map(x => Number(x) || 0);
   $('v1').textContent = eur(v[0]); $('v2').textContent = eur(v[1]); $('v3').textContent = eur(v[2]); $('v4').textContent = '−' + eur(v[3]);
   $('r2').hidden = !v[1]; $('r3').hidden = !v[2]; $('r4').hidden = !v[3];
@@ -293,29 +351,49 @@
   }
   if (bus) $('carrier').textContent = 'transportadora';
   if (bus) $('foot').textContent = 'by Josemar Lima · Boa viagem de autocarro';
-  document.title = 'Trip Easy Fast · ' + (t.o || '') + ' → ' + (t.d || '');
-  function copyText(text) {
-    // iPhone (Safari, Brave, Chrome): o método antigo, feito logo no toque, é o mais fiável
+  document.title = 'Trip Easy Fast · ' + (isDoc ? (t.dn || 'Documentos') : (t.o || '') + ' → ' + (t.d || ''));
+  function execCopy(text) {
+    // método clássico, compatível com iPhone (Safari, Brave, Chrome) e apps com navegador interno
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:absolute;left:-9999px;top:' + (window.pageYOffset || 0) + 'px;font-size:16px;border:0;padding:0;margin:0;';
+    document.body.appendChild(ta);
     let ok = false;
     try {
-      const ta = document.createElement('textarea');
-      ta.value = text; ta.setAttribute('readonly', ''); ta.contentEditable = 'true';
-      ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px;';
-      document.body.appendChild(ta);
+      ta.contentEditable = 'true'; ta.readOnly = false;
       const r = document.createRange(); r.selectNodeContents(ta);
-      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
-      ta.setSelectionRange(0, text.length);
+      const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      ta.setSelectionRange(0, 999999);
       ok = document.execCommand('copy');
-      s.removeAllRanges(); ta.remove();
+      s.removeAllRanges();
     } catch (e) {}
-    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(() => {});
-    return ok || !!(navigator.clipboard && navigator.clipboard.writeText);
+    ta.remove();
+    return ok;
+  }
+  function copyText(text, done) {
+    const viaExec = execCopy(text);
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(() => done(true), () => done(viaExec));
+    } else done(viaExec);
+  }
+  function sheet(value, label) {
+    let s = document.getElementById('sheet');
+    if (!s) {
+      s = document.createElement('div'); s.id = 'sheet';
+      s.innerHTML = '<div class="sh-in" role="dialog" aria-modal="true"><div class="lbl" id="sh-l"></div><input id="sh-v" readonly><p>Toque sem soltar no texto acima e escolha <b>Copiar</b>.</p><button class="btn ghost" type="button" id="sh-x">Fechar</button></div>';
+      document.body.appendChild(s);
+      s.addEventListener('click', e => { if (e.target === s || e.target.id === 'sh-x') s.hidden = true; });
+    }
+    document.getElementById('sh-l').textContent = label; const i = document.getElementById('sh-v'); i.value = value;
+    s.hidden = false; setTimeout(() => { i.focus(); i.setSelectionRange(0, value.length); }, 50);
   }
   document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', () => {
     const o = b.dataset.label || (b.dataset.label = b.textContent);
-    if (copyText(b.dataset.v)) b.textContent = 'Copiado ✓';
-    else { const r = document.createRange(); r.selectNodeContents(b.closest('.p').querySelector('.vv')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Toque sem soltar para copiar'; }
-    clearTimeout(b._t); b._t = setTimeout(() => b.textContent = o, 1800);
+    const shown = b.closest('.p').querySelector('.vv').textContent.trim();
+    copyText(b.dataset.v, ok => {
+      if (ok) { b.textContent = 'Copiado ✓'; clearTimeout(b._t); b._t = setTimeout(() => b.textContent = o, 1800); }
+      else sheet(shown, b.closest('.p').querySelector('.t').textContent);
+    });
   }));
 })();
 </script>
