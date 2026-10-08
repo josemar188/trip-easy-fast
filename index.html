@@ -117,9 +117,15 @@
   footer b { font-family: var(--display); font-style: italic; font-weight: 500; font-size: 17px; }
   footer p { margin-top: 4px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
 
-  .none { margin-top: -64px; padding: 36px 24px; text-align: center; }
-  .none h2 { font-family: var(--display); font-weight: 400; font-size: 26px; }
-  .none p { margin-top: 8px; color: var(--muted); }
+  .none { position: relative; margin-top: -64px; padding: 36px 26px 30px; text-align: center; border-radius: 22px; box-shadow: 0 24px 48px -20px rgba(11,22,38,.35), 0 2px 6px rgba(11,22,38,.06); }
+  .none .seal { display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto; border-radius: 50%; background: radial-gradient(circle at 30% 25%, #fff 0%, #f6efe0 70%); border: 1px solid #ecdcb4; }
+  .none .seal svg { width: 28px; height: 28px; fill: var(--gold-ink); }
+  .none h2 { margin-top: 18px; font-family: var(--display); font-weight: 400; font-size: 26px; line-height: 1.2; letter-spacing: -.3px; text-wrap: balance; }
+  .none h2 em { font-style: italic; }
+  .none p { max-width: 34ch; margin: 10px auto 0; color: var(--muted); font-size: 15px; }
+  .none .rule { width: 40px; height: 1px; margin: 22px auto; background: var(--gold); opacity: .6; }
+  .none .btn { max-width: 300px; margin: 0 auto; }
+  .none small { display: block; margin-top: 14px; font-size: 12px; color: var(--muted); }
   .ld main, .ld .hello, .ld .route { visibility: hidden; }
 
   @media (min-width: 700px) {
@@ -217,7 +223,7 @@
     </figure>
   </main>
 
-  <footer class="col"><b>Trip Easy Fast</b><p id="foot">by Josemar Lima· Boa viagem</p></footer>
+  <footer class="col"><b>Trip Easy Fast</b><p id="foot">by Josemar Lima · Boa viagem</p></footer>
 
 <script src="config.js"></script>
 <script>
@@ -235,8 +241,18 @@
   } catch (e) {}
   document.body.classList.remove('ld');
   if (!t) {
-    $('main').innerHTML = '<div class="card none"><h2>Viagem não encontrada</h2><p>O link está incompleto ou já não está disponível. Peça um novo link a quem lho enviou.</p></div>';
-    document.querySelector('.route').hidden = true; $('hello').textContent = 'Olá'; return;
+    const wa = 'https://wa.me/351961664286?text=' + encodeURIComponent('Olá Josemar, o link da minha viagem não está a abrir. Pode enviar-me um novo, por favor?');
+    $('main').innerHTML = '<div class="card none">'
+      + '<div class="seal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm4.2 3.8-2.6 5.8-5.8 2.6 2.6-5.8 5.8-2.6zM12 10.8a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z"/></svg></div>'
+      + '<h2>Este link já não <em>leva a lado nenhum</em></h2>'
+      + '<p>Pode estar incompleto, ou a proposta pode ter sido atualizada entretanto.</p>'
+      + '<div class="rule"></div>'
+      + '<a class="btn gold" href="' + wa + '" target="_blank" rel="noopener">Pedir novo link</a>'
+      + '<small>Se copiou o link de uma mensagem, confirme que o copiou por inteiro.</small></div>';
+    document.querySelector('.route').hidden = true; $('mode').hidden = true;
+    $('eyebrow').textContent = 'Ligação indisponível';
+    $('hello').innerHTML = 'Não encontrámos <em>esta viagem</em>';
+    document.title = 'Trip Easy Fast'; return;
   }
   const bus = t.tp === 'autocarro';
   if (bus) { document.body.classList.add('bus'); document.querySelector('meta[name=theme-color]').content = '#0a1f1b'; }
@@ -276,7 +292,7 @@
     $('dest').hidden = false;
   }
   if (bus) $('carrier').textContent = 'transportadora';
-  if (bus) $('foot').textContent = 'by Josemar · Boa viagem de autocarro';
+  if (bus) $('foot').textContent = 'by Josemar Lima · Boa viagem de autocarro';
   document.title = 'Trip Easy Fast · ' + (t.o || '') + ' → ' + (t.d || '');
   document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', async () => {
     const o = b.textContent;
