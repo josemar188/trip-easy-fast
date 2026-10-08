@@ -248,7 +248,7 @@
   function showLink(code, t) {
     const url = urlOf(code);
     el('res').hidden = false; el('link').textContent = url; el('op').href = url;
-    el('wa').href = 'https://wa.me/?text=' + encodeURIComponent('Olá' + (t.cl ? ' ' + t.cl : '') + '! Segue o resumo da sua viagem ' + (t.tp === 'autocarro' ? 'de autocarro ' : '') + t.o + ' → ' + t.d + (t.dt ? ' de ' + pt(t.dt) : '') + ':\n' + url);
+    el('wa').href = 'https://wa.me/?text=' + encodeURIComponent('Olá' + (t.cl ? ' ' + t.cl : '') + '! Segue a proposta da sua viagem ' + (t.tp === 'autocarro' ? 'de autocarro ' : '') + t.o + ' → ' + t.d + (t.dt ? ' de ' + pt(t.dt) : '') + ':\n' + url);
   }
   async function copy(text, btn, label) {
     try { await navigator.clipboard.writeText(text); btn.textContent = 'Copiado ✓'; setTimeout(() => btn.textContent = label, 1600); }
