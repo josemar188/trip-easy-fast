@@ -4,8 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Trip Easy Fast</title>
-<meta name="description" content="Resumo da sua viagem, com valores e meios de pagamento.">
-<meta property="og:title" content="Trip Easy Fast · Resumo da sua viagem">
+<meta name="description" content="Proposta da sua viagem, com valores e meios de pagamento.">
+<meta property="og:title" content="Trip Easy Fast · Proposta de viagem">
 <meta property="og:description" content="Consulte os detalhes, os valores e os meios de pagamento da sua viagem.">
 <meta name="theme-color" content="#0b1626">
 <meta name="robots" content="noindex">
@@ -110,6 +110,9 @@
   .dest .cap h3 em { font-style: italic; }
   .dest .cap p { margin-top: 10px; font-size: 14px; color: rgba(255,255,255,.78); }
 
+  .note { display: flex; gap: 12px; align-items: flex-start; margin-top: 12px; padding: 14px 16px; border-radius: 16px; background: #fbf6ea; border: 1px solid #ecdcb4; color: #5b4618; font-size: 13.5px; line-height: 1.5; }
+  .note svg { flex: none; width: 18px; height: 18px; margin-top: 1px; fill: var(--gold-ink); }
+  .note b { color: #3f300c; }
   footer { padding: 36px 0 calc(env(safe-area-inset-bottom, 0px) + 36px); text-align: center; }
   footer b { font-family: var(--display); font-style: italic; font-weight: 500; font-size: 17px; }
   footer p { margin-top: 4px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
@@ -144,8 +147,8 @@
         <div class="mode" id="mode"></div>
       </div>
       <div class="hello">
-        <div class="eyebrow" id="eyebrow">Resumo da viagem</div>
-        <h1 id="hello">A sua viagem está <em>pronta</em></h1>
+        <div class="eyebrow" id="eyebrow">Reserva pendente</div>
+        <h1 id="hello">A <em>proposta</em> da sua viagem</h1>
       </div>
       <div class="route">
         <div class="city"><div class="code" id="co"></div><div class="name" id="on">Origem</div></div>
@@ -177,6 +180,10 @@
         <div class="row" id="r3"><span>Taxa de check-in</span><b id="v3"></b></div>
         <div class="row d" id="r4"><span>Desconto</span><b id="v4"></b></div>
         <div class="total"><span>Total a pagar</span><b id="total"></b></div>
+      </div>
+      <div class="note" role="note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm-1 9v6h2v-6h-2zm0-4v2h2V7h-2z"/></svg>
+        <p><b>Preço ainda não garantido.</b> Os valores podem mudar até a reserva ser paga, porque dependem da disponibilidade da <span id="carrier">companhia aérea</span>. Ao pagar, o preço fica confirmado.</p>
       </div>
     </section>
 
@@ -236,8 +243,8 @@
   const eur = n => (Number(n) || 0).toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
   const first = String(t.cl || '').trim().split(/\s+/)[0];
   $('mode').innerHTML = '<svg viewBox="0 0 24 24">' + (bus ? BUS : PLANE) + '</svg>' + (bus ? 'Autocarro' : 'Avião');
-  $('eyebrow').textContent = t.cl ? 'Resumo da viagem · ' + t.cl : 'Resumo da viagem';
-  $('hello').innerHTML = first ? 'Olá ' + first.replace(/[<>&]/g, '') + ', a sua viagem está <em>pronta</em>' : 'A sua viagem está <em>pronta</em>';
+  $('eyebrow').textContent = t.cl ? 'Reserva pendente · ' + t.cl : 'Reserva pendente';
+  $('hello').innerHTML = first ? 'Olá ' + first.replace(/[<>&]/g, '') + ', aqui está a <em>proposta</em> da sua viagem' : 'A <em>proposta</em> da sua viagem';
   const setCity = (codeEl, nameEl, code, city, word) => {
     codeEl.textContent = code || city || ''; if (!code) codeEl.classList.add('long');
     nameEl.textContent = code ? city + ' · ' + word : word;
@@ -268,6 +275,7 @@
     $('photo').onerror = () => $('dest').hidden = true;
     $('dest').hidden = false;
   }
+  if (bus) $('carrier').textContent = 'transportadora';
   if (bus) $('foot').textContent = 'by Josemar · Boa viagem de autocarro';
   document.title = 'Trip Easy Fast · ' + (t.o || '') + ' → ' + (t.d || '');
   document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', async () => {
