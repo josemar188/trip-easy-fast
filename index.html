@@ -57,7 +57,7 @@
   .pass { position: relative; margin-top: -64px; background: var(--card); border-radius: 22px; box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 24px 48px -20px rgba(11,22,38,.35), 0 2px 6px rgba(11,22,38,.06); }
   .pass .main { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; padding: 24px 24px 22px; }
   .lbl { font-size: 10.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
-  .val { margin-top: 4px; font-family: var(--display); font-size: 24px; font-weight: 600; letter-spacing: -.3px; color: var(--text); font-variant-numeric: lining-nums tabular-nums; }
+  .val { margin-top: 4px; line-height: 36px; font-family: var(--display); font-size: 24px; font-weight: 600; letter-spacing: -.3px; color: var(--text); font-variant-numeric: lining-nums tabular-nums; }
   .perf { position: relative; height: 22px; }
   .perf::before { content: ""; position: absolute; left: 22px; right: 22px; top: 50%; border-top: 2px dashed var(--line); }
   .perf::after, .perf i { content: ""; position: absolute; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); }
@@ -90,7 +90,7 @@
   .p { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: center; padding: 18px; }
   .p .t { font-weight: 700; font-size: 15px; }
   .p .d { grid-column: 2; font-size: 12px; color: var(--muted); }
-  .p .vv { grid-column: 1 / -1; margin-top: 12px; font-family: var(--mono); font-size: 15px; font-weight: 500; letter-spacing: .3px; color: var(--text); background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; overflow-wrap: anywhere; }
+  .p .vv { grid-column: 1 / -1; margin-top: 12px; font-family: var(--mono); font-size: 15px; font-weight: 500; letter-spacing: .3px; color: var(--text); background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; overflow-wrap: break-word; }
   .p .vv a { color: inherit; text-decoration: none; }
   .p .act { grid-column: 1 / -1; margin-top: 10px; }
   .btn { display: block; width: 100%; padding: 14px; border-radius: 99px; font: inherit; font-size: 14px; font-weight: 700; letter-spacing: .3px; text-align: center; text-decoration: none; cursor: pointer; transition: transform .12s, background .15s; }
@@ -130,12 +130,12 @@
 
   @media (min-width: 700px) {
     .pass .main { grid-template-columns: repeat(3, 1fr); }
-    .pay { grid-template-columns: repeat(3, 1fr); }
-    .p { grid-template-columns: 1fr; align-content: start; }
-    .p .d { grid-column: 1; }
-    .p .ic { margin-bottom: 8px; }
-    .p .vv { font-size: 13px; }
-    .p .act { margin-top: auto; padding-top: 10px; }
+    .p { grid-template-columns: 40px 1fr 190px; grid-template-areas: "ic t act" "ic d act" "vv vv vv"; column-gap: 16px; row-gap: 2px; padding: 20px 22px; }
+    .p .ic { grid-area: ic; }
+    .p .t { grid-area: t; align-self: end; }
+    .p .d { grid-area: d; align-self: start; }
+    .p .act { grid-area: act; align-self: center; margin: 0; }
+    .p .vv { grid-area: vv; margin-top: 14px; font-size: 15px; }
     .dest { aspect-ratio: 16 / 10; }
   }
   @media (prefers-reduced-motion: no-preference) {
@@ -169,7 +169,7 @@
       <div class="main">
         <div><div class="lbl">Data</div><div class="val" id="dt"></div></div>
         <div><div class="lbl">Partida</div><div class="val" id="hr"></div></div>
-        <div class="wide"><div class="lbl">Referência</div><div class="val" id="ref" style="font-family:var(--mono);font-size:20px;font-weight:500"></div></div>
+        <div class="wide"><div class="lbl">Referência</div><div class="val" id="ref" style="font-family:var(--mono);font-size:21px;font-weight:500;line-height:36px;letter-spacing:1px"></div></div>
       </div>
       <div class="perf"><i></i></div>
       <div class="stub">
