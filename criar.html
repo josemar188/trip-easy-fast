@@ -72,6 +72,16 @@
   body.bus input:focus, body.bus textarea:focus { border-color: #45c29c; box-shadow: 0 0 0 4px rgba(69,194,156,.2); }
   .tp { display: inline-flex; vertical-align: -3px; margin-right: 6px; } .tp svg { width: 16px; height: 16px; fill: #1560bd; }
   .tp.bus svg { fill: #127a63; }
+  .ph { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; border: 1.5px dashed #cfd9e6; background: #fbfcfe; }
+  .ph.ok { border-style: solid; border-color: #bfe3d3; background: #f1faf6; }
+  .ph .th { flex: none; width: 64px; height: 64px; border-radius: 10px; background: #e9eef5 center / cover no-repeat; display: grid; place-items: center; }
+  .ph .th svg { width: 24px; height: 24px; fill: #9aabc0; }
+  .ph .phx { flex: 1; min-width: 0; }
+  .ph .pht { font-size: 14px; font-weight: 700; color: #0b2a5b; }
+  .ph.ok .pht { color: #17694f; }
+  .ph .phs { margin-top: 2px; font-size: 12px; line-height: 1.4; color: #6c7c92; }
+  .ph .phb { display: inline-block; margin-top: 8px; padding: 7px 14px; border-radius: 99px; border: 1px solid #c9d6e6; background: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0; text-transform: none; color: #0b2a5b; cursor: pointer; }
+  .ph .phb:focus-within { outline: 2px solid #38b6e8; outline-offset: 2px; }
 </style>
 </head>
 <body>
@@ -100,6 +110,10 @@
         <div class="r"><label>Data<input id="dt" type="date"></label><label>Hora<input id="hr" type="time"></label></div>
         <div class="r c"><label>Origem<input id="o" placeholder="Praia"></label><label>Código (opc.)<input id="co" maxlength="4" placeholder="RAI"></label></div>
         <div class="r c"><label>Destino<input id="d" placeholder="Lisboa"></label><label>Código (opc.)<input id="cd" maxlength="4" placeholder="LIS"></label></div>
+        <div class="ph" id="ph" hidden>
+          <div class="th" id="phi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h3l2-2h6l2 2h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg></div>
+          <div class="phx"><div class="pht" id="pht"></div><div class="phs" id="phs"></div><label class="phb" id="phb"><input type="file" id="phf" accept="image/*" hidden><span id="phl">Carregar foto</span></label></div>
+        </div>
       </div>
       <div class="grp">
         <div class="gt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6a1 1 0 0 1 1 1v2h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2V4a1 1 0 0 1 1-1zm1 3h4V5h-4v1z"/></svg>Bagagem</div>
@@ -169,22 +183,59 @@
     if (!r.ok) throw new Error(r.status === 400 ? 'Email ou palavra-passe incorretos.' : (j.msg || j.error_description || 'Não foi possível entrar.'));
     keep({ a: j.access_token, r: j.refresh_token, e: Date.now() + j.expires_in * 1000 - 60000 });
   }
-  async function api(path, opt = {}) {
+  async function fresh() {
     if (ses && Date.now() > ses.e) { try { await auth('refresh_token', { refresh_token: ses.r }); } catch (e) { keep(null); show(); throw new Error('A sessão expirou. Entre novamente.'); } }
+  }
+  async function api(path, opt = {}) {
+    await fresh();
     const r = await fetch(U + '/rest/v1/' + path, { ...opt, headers: { apikey: K, Authorization: 'Bearer ' + ses.a, 'Content-Type': 'application/json', ...(opt.headers || {}) } });
     if (r.status === 401) { keep(null); show(); throw new Error('A sessão expirou. Entre novamente.'); }
     if (!r.ok) throw new Error('Não foi possível guardar (' + r.status + '). Tente outra vez.');
     return r.status === 204 ? null : r.json();
   }
 
+  let city = null, ct = null;
+  const slug = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+  function phState(st, name) {
+    const box = el('ph'); box.hidden = false; box.classList.toggle('ok', st === 'ok');
+    el('phi').style.backgroundImage = st === 'ok' && city ? 'url("' + city.url + '")' : '';
+    el('phi').firstElementChild.style.display = st === 'ok' ? 'none' : '';
+    const T = {
+      load: ['A procurar foto de ' + name + '…', '', false],
+      up: ['A guardar a foto de ' + name + '…', 'Pode demorar alguns segundos.', false],
+      ok: ['✓ Já tem foto de ' + name, 'Vai aparecer automaticamente no fim da página do cliente.', 'Trocar foto'],
+      none: ['Ainda não há foto de ' + name, 'Carregue uma (opcional). Fica guardada e é usada nas próximas viagens para ' + name + '.', 'Carregar foto'],
+      err: ['Não foi possível verificar a foto', 'Pode carregar uma na mesma.', 'Carregar foto']
+    }[st];
+    el('pht').textContent = T[0]; el('phs').textContent = T[1]; el('phs').hidden = !T[1];
+    el('phb').hidden = !T[2]; if (T[2]) el('phl').textContent = T[2];
+  }
+  async function checkCity() {
+    const name = el('d').value.trim(), s = slug(name); city = null;
+    if (!s) { el('ph').hidden = true; return; }
+    phState('load', name);
+    try {
+      const r = await api('cities?slug=eq.' + s + '&select=slug,name,url');
+      if (slug(el('d').value) !== s) return;
+      city = r[0] || null; phState(city ? 'ok' : 'none', city ? city.name : name);
+    } catch (e) { phState('err', name); }
+  }
+  async function shrink(f) {
+    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(f); });
+    const k = Math.min(1, 1800 / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    return new Promise(res => c.toBlob(res, 'image/jpeg', .84));
+  }
   function read() {
     const t = { tp };
     ids.forEach(i => { const x = el(i).value.trim(); t[i] = money.includes(i) ? num(x) : x; });
     t.co = t.co.toUpperCase(); t.cd = t.cd.toUpperCase();
+    const s = slug(t.d); if (city && city.slug === s) t.ph = city.url;
     return t;
   }
   function fill(t) {
-    setTp(t.tp);
+    setTp(t.tp); setTimeout(checkCity, 0);
     ids.forEach(i => el(i).value = money.includes(i) ? (t[i] ? String(t[i].toFixed(2)).replace('.', ',') : '') : (t[i] || ''));
     el('tot').textContent = eur(tot(read()));
   }
@@ -260,6 +311,21 @@
     el('sv').disabled = false;
   });
   document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => setTp(b.dataset.tp)));
+  el('d').addEventListener('input', () => { clearTimeout(ct); ct = setTimeout(checkCity, 600); });
+  el('phf').addEventListener('change', async e => {
+    const f = e.target.files[0]; e.target.value = ''; if (!f) return;
+    const name = el('d').value.trim(), s = slug(name); if (!s) return;
+    phState('up', name); msg('serr');
+    try {
+      const blob = await shrink(f); await fresh();
+      const r = await fetch(U + '/storage/v1/object/cidades/' + s + '.jpg', { method: 'POST', headers: { apikey: K, Authorization: 'Bearer ' + ses.a, 'Content-Type': 'image/jpeg', 'x-upsert': 'true' }, body: blob });
+      if (!r.ok) throw new Error('upload ' + r.status);
+      const url = U + '/storage/v1/object/public/cidades/' + s + '.jpg?v=' + Date.now();
+      await api('cities', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=representation' }, body: JSON.stringify({ slug: s, name, url }) });
+      city = { slug: s, name, url }; phState('ok', name);
+      if (editing) msg('serr', '');
+    } catch (err) { phState(city ? 'ok' : 'none', name); msg('serr', 'Não foi possível guardar a foto. Tente outra vez.'); }
+  });
   fill({ bg: '2 × 23 kg\n+ 2 malas de mão pequenas' });
   show();
 </script>
