@@ -58,8 +58,8 @@
   .it .a { display: flex; gap: 6px; flex-wrap: wrap; }
   .it button { font: inherit; font-size: 12px; font-weight: 700; padding: 8px 12px; border-radius: 99px; border: 1px solid #c9d6e6; background: #f4f7fb; color: #0b2a5b; cursor: pointer; }
   .it button.del { color: #b3261e; }
-  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; margin-bottom: 18px; border-radius: 14px; background: #eef2f8; }
-  .seg button { display: flex; align-items: center; justify-content: center; gap: 8px; height: 46px; border: 0; border-radius: 10px; background: transparent; font: inherit; font-size: 15px; font-weight: 700; color: #7a8ca5; cursor: pointer; transition: background .15s, color .15s; }
+  .seg { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; padding: 5px; margin-bottom: 18px; border-radius: 14px; background: #eef2f8; }
+  .seg button { display: flex; align-items: center; justify-content: center; gap: 6px; height: 46px; padding: 0 4px; font-size: 14px !important; border: 0; border-radius: 10px; background: transparent; font: inherit; font-size: 15px; font-weight: 700; color: #7a8ca5; cursor: pointer; transition: background .15s, color .15s; }
   .seg button svg { width: 18px; height: 18px; fill: currentColor; }
   .seg button.on { background: #fff; color: #0b2a5b; box-shadow: 0 2px 8px rgba(11,42,91,.12); }
   body.bus header { background: linear-gradient(135deg, #0c3a35, #127a63 60%, #45c29c); }
@@ -82,6 +82,24 @@
   .ph .phs { margin-top: 2px; font-size: 12px; line-height: 1.4; color: #6c7c92; }
   .ph .phb { display: inline-block; margin-top: 8px; padding: 7px 14px; border-radius: 99px; border: 1px solid #c9d6e6; background: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0; text-transform: none; color: #0b2a5b; cursor: pointer; }
   .ph .phb:focus-within { outline: 2px solid #38b6e8; outline-offset: 2px; }
+  body.doc header { background: linear-gradient(135deg, #22112a, #4f2559 60%, #a0679f); }
+  body.doc h2, body.doc .seg button.on { color: #5b2a66; }
+  body.doc .gt svg { fill: #5b2a66; }
+  body.doc .total { background: linear-gradient(90deg, #22112a, #4f2559); }
+  body.doc button.b, body.doc a.b { border-color: #5b2a66; color: #5b2a66; }
+  body.doc .b.wa { color: #fff; border-color: #1c9a6b; }
+  body.doc .b.pri { background: #5b2a66; border-color: #5b2a66; color: #fff; }
+  body.doc input:focus, body.doc textarea:focus { border-color: #a0679f; box-shadow: 0 0 0 4px rgba(160,103,159,.2); }
+  .tp.doc svg { fill: #5b2a66; }
+  .docs { display: grid; gap: 8px; }
+  .df { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1.5px solid #dde5ef; border-radius: 12px; background: #fff; }
+  .df svg { flex: none; width: 20px; height: 20px; fill: #5b2a66; }
+  .df .fn { flex: 1; min-width: 0; font-size: 14px; font-weight: 600; color: #0b2a5b; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; text-transform: none; letter-spacing: 0; }
+  .df .fs { font-size: 12px; color: #7a8ca5; text-transform: none; letter-spacing: 0; }
+  .df button { flex: none; border: 0; background: none; color: #b3261e; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; padding: 4px 6px; }
+  .up { display: flex; align-items: center; justify-content: center; height: 52px; border: 1.5px dashed #c9b3cf; border-radius: 12px; background: #fbf8fc; color: #5b2a66; font-size: 14px; font-weight: 700; letter-spacing: 0; text-transform: none; cursor: pointer; }
+  .up:focus-within { outline: 2px solid #a0679f; outline-offset: 2px; }
+  .up.busy { opacity: .6; pointer-events: none; }
 </style>
 </head>
 <body>
@@ -100,12 +118,12 @@
   <div id="app" hidden style="display:grid;gap:16px">
     <section>
       <h2 id="ft">Nova viagem</h2>
-      <div class="seg" role="radiogroup" aria-label="Tipo de viagem"><button type="button" role="radio" data-tp="aviao" class="on" aria-checked="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>Avião</button><button type="button" role="radio" data-tp="autocarro" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a3 3 0 0 1 3 3v12a2 2 0 0 1-1 1.7V21a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-2H7v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.3A2 2 0 0 1 3 17V5a3 3 0 0 1 3-3zm0 4v5h12V6H6zm1.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>Autocarro</button></div>
+      <div class="seg" role="radiogroup" aria-label="Tipo de viagem"><button type="button" role="radio" data-tp="aviao" class="on" aria-checked="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>Avião</button><button type="button" role="radio" data-tp="autocarro" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a3 3 0 0 1 3 3v12a2 2 0 0 1-1 1.7V21a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-2H7v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.3A2 2 0 0 1 3 17V5a3 3 0 0 1 3-3zm0 4v5h12V6H6zm1.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>Autocarro</button><button type="button" role="radio" data-tp="documentos" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V9h5.5L13 3.5zM8 13v2h8v-2H8zm0 4v2h5v-2H8z"/></svg>Documentos</button></div>
       <div class="grp">
         <div class="gt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9zm0 2c-4.4 0-8 2.2-8 5v2h16v-2c0-2.8-3.6-5-8-5z"/></svg>Cliente</div>
         <label>Nome do cliente (opcional)<input id="cl" autocomplete="off" placeholder="Ex.: Maria Silva"></label>
       </div>
-      <div class="grp">
+      <div class="grp" id="gVoo">
         <div class="gt" id="vt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>Voo</div>
         <div class="r"><label>Data<input id="dt" type="date"></label><label>Hora<input id="hr" type="time"></label></div>
         <div class="r c"><label>Origem<input id="o" placeholder="Praia"></label><label>Código (opc.)<input id="co" maxlength="4" placeholder="RAI"></label></div>
@@ -115,14 +133,24 @@
           <div class="phx"><div class="pht" id="pht"></div><div class="phs" id="phs"></div><label class="phb" id="phb"><input type="file" id="phf" accept="image/*" hidden><span id="phl">Carregar foto</span></label></div>
         </div>
       </div>
-      <div class="grp">
+      <div class="grp" id="gDoc" hidden>
+        <div class="gt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V9h5.5L13 3.5zM8 13v2h8v-2H8zm0 4v2h5v-2H8z"/></svg>Documento</div>
+        <label>Que documento foi feito<input id="dn" autocomplete="off" placeholder="Ex.: Renovação de passaporte"></label>
+        <div class="r"><label>Concluído em<input id="dd" type="date"></label><span></span></div>
+        <label>Notas para o cliente (opcional)<textarea id="nt" placeholder="Ex.: Válido até 2036. O original pode ser levantado na loja."></textarea></label>
+        <div class="gt" style="margin-top:4px"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M16.5 6.5v10a4.5 4.5 0 0 1-9 0V5a3 3 0 0 1 6 0v10.5a1.5 1.5 0 0 1-3 0V6.5H9v9a3 3 0 0 0 6 0V5a4.5 4.5 0 0 0-9 0v11.5a6 6 0 0 0 12 0v-10h-1.5z"/></svg>Anexos</div>
+        <div id="docs" class="docs"></div>
+        <label class="up" id="upl"><input type="file" id="upf" accept="application/pdf,image/*" multiple hidden><span id="upt">+ Adicionar ficheiros (PDF ou imagem)</span></label>
+        <p class="hint" style="margin-top:0">Os anexos ficam numa pasta privada. Só quem tiver o link do cliente os consegue abrir, durante 1 ano.</p>
+      </div>
+      <div class="grp" id="gBag">
         <div class="gt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6a1 1 0 0 1 1 1v2h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2V4a1 1 0 0 1 1-1zm1 3h4V5h-4v1z"/></svg>Bagagem</div>
         <label>Descrição<textarea id="bg" placeholder="Ex.: 2 × 23 kg + 2 malas de mão"></textarea></label>
       </div>
       <div class="grp">
         <div class="gt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18.5A6.5 6.5 0 0 1 9.2 15H15v-2H8.6a6.4 6.4 0 0 1 0-2H15V9H9.2A6.5 6.5 0 0 1 15 5.5c1.3 0 2.5.4 3.5 1l1-1.8A8.5 8.5 0 0 0 7 9H4v2h2.6a8.6 8.6 0 0 0 0 2H4v2h3a8.5 8.5 0 0 0 12.5 4.3l-1-1.8c-1 .6-2.2 1-3.5 1z"/></svg>Valores</div>
-        <div class="r"><label>Viagem<span class="m"><input id="v" inputmode="decimal" placeholder="0,00"><i>€</i></span></label><label>Taxa operação<span class="m"><input id="to" inputmode="decimal" placeholder="0,00"><i>€</i></span></label></div>
-        <div class="r"><label>Taxa check-in<span class="m"><input id="tc" inputmode="decimal" placeholder="0,00"><i>€</i></span></label><label>Desconto<span class="m"><input id="ds" inputmode="decimal" placeholder="0,00"><i>€</i></span></label></div>
+        <div class="r"><label><span id="l_v">Viagem</span><span class="m"><input id="v" inputmode="decimal" placeholder="0,00"><i>€</i></span></label><label><span id="l_to">Taxa operação</span><span class="m"><input id="to" inputmode="decimal" placeholder="0,00"><i>€</i></span></label></div>
+        <div class="r"><label><span id="l_tc">Taxa check-in</span><span class="m"><input id="tc" inputmode="decimal" placeholder="0,00"><i>€</i></span></label><label>Desconto<span class="m"><input id="ds" inputmode="decimal" placeholder="0,00"><i>€</i></span></label></div>
       </div>
       <div class="total"><span>Total</span><b id="tot"></b></div>
       <div class="btns">
@@ -144,7 +172,7 @@
     </section>
 
     <section>
-      <h2>Viagens criadas</h2>
+      <h2>Viagens e serviços</h2>
       <div id="list"><p class="hint">A carregar…</p></div>
     </section>
   </div>
@@ -165,14 +193,19 @@
   const msg = (id, m) => { el(id).textContent = m || ''; el(id).hidden = !m; };
   let ses = null, editing = null, trips = [], tp = 'aviao';
   const PL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>', BU = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a3 3 0 0 1 3 3v12a2 2 0 0 1-1 1.7V21a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-2H7v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.3A2 2 0 0 1 3 17V5a3 3 0 0 1 3-3zm0 4v5h12V6H6zm1.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>';
+  const DOC = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V9h5.5L13 3.5zM8 13v2h8v-2H8zm0 4v2h5v-2H8z"/></svg>';
+  let docs = [], dir = null;
   function setTp(x) {
-    tp = x === 'autocarro' ? 'autocarro' : 'aviao'; const bus = tp === 'autocarro';
-    document.body.classList.toggle('bus', bus);
+    tp = ['autocarro', 'documentos'].includes(x) ? x : 'aviao'; const bus = tp === 'autocarro', isDoc = tp === 'documentos';
+    document.body.classList.toggle('bus', bus); document.body.classList.toggle('doc', isDoc);
+    el('gVoo').hidden = isDoc; el('gBag').hidden = isDoc; el('gDoc').hidden = !isDoc;
+    el('l_v').textContent = isDoc ? 'Serviço' : 'Viagem'; el('l_to').textContent = isDoc ? 'Taxas oficiais' : 'Taxa operação'; el('l_tc').textContent = isDoc ? 'Outros custos' : 'Taxa check-in';
+    el('ft').textContent = editing ? (isDoc ? 'Editar serviço ' : 'Editar viagem ') + editing : (isDoc ? 'Novo serviço de documentos' : 'Nova viagem');
     document.querySelectorAll('.seg button').forEach(b => { const on = b.dataset.tp === tp; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
     el('vt').innerHTML = (bus ? BU : PL) + (bus ? 'Autocarro' : 'Voo');
     el('o').placeholder = bus ? 'Lisboa' : 'Praia'; el('d').placeholder = bus ? 'Porto' : 'Lisboa';
     el('co').placeholder = bus ? '' : 'RAI'; el('cd').placeholder = bus ? '' : 'LIS';
-    document.querySelector('meta[name=theme-color]').content = bus ? '#0c3a35' : '#0b2a5b';
+    document.querySelector('meta[name=theme-color]').content = isDoc ? '#22112a' : bus ? '#0c3a35' : '#0b2a5b';
   }
   try { ses = JSON.parse(localStorage.getItem('tef_ses')); } catch (e) {}
   function keep(s) { ses = s; try { s ? localStorage.setItem('tef_ses', JSON.stringify(s)) : localStorage.removeItem('tef_ses'); } catch (e) {} }
@@ -231,28 +264,53 @@
     const t = { tp };
     ids.forEach(i => { const x = el(i).value.trim(); t[i] = money.includes(i) ? num(x) : x; });
     t.co = t.co.toUpperCase(); t.cd = t.cd.toUpperCase();
+    if (tp === 'documentos') { t.dn = el('dn').value.trim(); t.dd = el('dd').value; t.nt = el('nt').value.trim(); t.docs = docs; t.dir = dir; return t; }
     const s = slug(t.d); if (city && city.slug === s) t.ph = city.url;
     return t;
   }
   function fill(t) {
     setTp(t.tp); setTimeout(checkCity, 0);
+    el('dn').value = t.dn || ''; el('dd').value = t.dd || ''; el('nt').value = t.nt || ''; docs = (t.docs || []).slice(); dir = t.dir || null; renderDocs();
     ids.forEach(i => el(i).value = money.includes(i) ? (t[i] ? String(t[i].toFixed(2)).replace('.', ',') : '') : (t[i] || ''));
     el('tot').textContent = eur(tot(read()));
   }
   function setEdit(code) {
     editing = code;
-    el('ft').textContent = code ? 'Editar viagem ' + code : 'Nova viagem';
+    const isDoc = tp === 'documentos'; el('ft').textContent = code ? (isDoc ? 'Editar serviço ' : 'Editar viagem ') + code : (isDoc ? 'Novo serviço de documentos' : 'Nova viagem');
     el('sv').textContent = code ? 'Guardar alterações' : 'Criar link';
     el('nw').hidden = !code;
   }
   function showLink(code, t) {
     const url = urlOf(code);
     el('res').hidden = false; el('link').textContent = url; el('op').href = url;
+    if (t.tp === 'documentos') { el('wa').href = 'https://wa.me/?text=' + encodeURIComponent('Olá' + (t.cl ? ' ' + t.cl : '') + '! Segue a sua documentação (' + t.dn + '):\n' + url); return; }
     el('wa').href = 'https://wa.me/?text=' + encodeURIComponent('Olá' + (t.cl ? ' ' + t.cl : '') + '! Segue a proposta da sua viagem ' + (t.tp === 'autocarro' ? 'de autocarro ' : '') + t.o + ' → ' + t.d + (t.dt ? ' de ' + pt(t.dt) : '') + ':\n' + url);
   }
-  async function copy(text, btn, label) {
-    try { await navigator.clipboard.writeText(text); btn.textContent = 'Copiado ✓'; setTimeout(() => btn.textContent = label, 1600); }
-    catch (e) { btn.textContent = 'Selecione e copie o link'; setTimeout(() => btn.textContent = label, 2500); }
+  function execCopy(text) {
+    const ta = document.createElement('textarea');
+    ta.value = text;
+    ta.style.cssText = 'position:absolute;left:-9999px;top:' + (window.pageYOffset || 0) + 'px;font-size:16px;border:0;padding:0;margin:0;';
+    document.body.appendChild(ta);
+    let ok = false;
+    try {
+      ta.contentEditable = 'true'; ta.readOnly = false;
+      const r = document.createRange(); r.selectNodeContents(ta);
+      const s = window.getSelection(); s.removeAllRanges(); s.addRange(r);
+      ta.setSelectionRange(0, 999999);
+      ok = document.execCommand('copy');
+      s.removeAllRanges();
+    } catch (e) {}
+    ta.remove();
+    return ok;
+  }
+  function copy(text, btn, label) {
+    const viaExec = execCopy(text);
+    const done = ok => {
+      if (ok) btn.textContent = 'Copiado ✓';
+      else { btn.textContent = 'Toque sem soltar no link'; const r = document.createRange(); r.selectNodeContents(el('link')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+      setTimeout(() => btn.textContent = label, 2200);
+    };
+    if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(() => done(true), () => done(viaExec)); else done(viaExec);
   }
   function newCode() {
     const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', r = crypto.getRandomValues(new Uint8Array(6));
@@ -261,13 +319,13 @@
 
   function render() {
     const L = el('list'); L.textContent = '';
-    if (!trips.length) { const p = document.createElement('p'); p.className = 'hint'; p.textContent = 'Ainda não criou nenhuma viagem.'; L.appendChild(p); return; }
+    if (!trips.length) { const p = document.createElement('p'); p.className = 'hint'; p.textContent = 'Ainda não criou nenhuma viagem nem serviço.'; L.appendChild(p); return; }
     trips.forEach(row => {
       const t = row.data, it = document.createElement('div'); it.className = 'it';
       const i = document.createElement('div'); i.className = 'i';
-      const n = document.createElement('div'); n.className = 'n'; n.textContent = (t.cl || 'Sem nome') + ' · ' + (t.o || '') + ' → ' + (t.d || '');
-      const s = document.createElement('div'); s.className = 's'; s.textContent = [pt(t.dt), t.hr, eur(tot(t)), row.code].filter(Boolean).join(' · ');
-      const ti = document.createElement('span'); ti.className = 'tp' + (t.tp === 'autocarro' ? ' bus' : ''); ti.innerHTML = t.tp === 'autocarro' ? BU : PL; n.prepend(ti);
+      const n = document.createElement('div'); n.className = 'n'; n.textContent = (t.cl || 'Sem nome') + ' · ' + (t.tp === 'documentos' ? (t.dn || 'Documentos') : (t.o || '') + ' → ' + (t.d || ''));
+      const s = document.createElement('div'); s.className = 's'; s.textContent = (t.tp === 'documentos' ? [pt(t.dd), (t.docs || []).length + ' anexo(s)', eur(tot(t)), row.code] : [pt(t.dt), t.hr, eur(tot(t)), row.code]).filter(Boolean).join(' · ');
+      const ti = document.createElement('span'); ti.className = 'tp' + (t.tp === 'autocarro' ? ' bus' : t.tp === 'documentos' ? ' doc' : ''); ti.innerHTML = t.tp === 'autocarro' ? BU : t.tp === 'documentos' ? DOC : PL; n.prepend(ti);
       i.append(n, s);
       const a = document.createElement('div'); a.className = 'a';
       const mk = (label, fn, cls) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; if (cls) b.className = cls; b.addEventListener('click', () => fn(b)); a.appendChild(b); };
@@ -275,7 +333,7 @@
       mk('Editar', () => { fill(t); setEdit(row.code); showLink(row.code, t); window.scrollTo({ top: 0, behavior: 'smooth' }); });
       mk('Apagar', async b => {
         if (b.dataset.ok !== '1') { b.dataset.ok = '1'; b.textContent = 'Confirmar?'; setTimeout(() => { b.dataset.ok = ''; b.textContent = 'Apagar'; }, 3000); return; }
-        try { await api('trips?code=eq.' + row.code, { method: 'DELETE', headers: { Prefer: 'return=minimal' } }); if (editing === row.code) { setEdit(null); el('res').hidden = true; } await load(); }
+        try { if ((t.docs || []).length) await rmFiles(t.docs.map(f => f.path)).catch(() => {}); await api('trips?code=eq.' + row.code, { method: 'DELETE', headers: { Prefer: 'return=minimal' } }); if (editing === row.code) { setEdit(null); el('res').hidden = true; } await load(); }
         catch (e) { msg('serr', e.message); }
       }, 'del');
       it.append(i, a); L.appendChild(it);
@@ -298,11 +356,12 @@
     catch (err) { msg('lerr', err.message); }
   });
   el('out').addEventListener('click', () => { keep(null); show(); });
-  el('nw').addEventListener('click', () => { setEdit(null); el('res').hidden = true; });
+  el('nw').addEventListener('click', () => { setEdit(null); el('res').hidden = true; docs = []; dir = null; renderDocs(); });
   el('cp').addEventListener('click', () => copy(el('link').textContent, el('cp'), 'Copiar link'));
   el('sv').addEventListener('click', async () => {
     const t = read(); msg('serr');
-    if (!t.o || !t.d || !t.dt) { msg('serr', 'Preencha pelo menos a data, a origem e o destino.'); return; }
+    if (t.tp === 'documentos') { if (!t.dn) { msg('serr', 'Escreva que documento foi feito.'); return; } }
+    else if (!t.o || !t.d || !t.dt) { msg('serr', 'Preencha pelo menos a data, a origem e o destino.'); return; }
     const code = editing || newCode(); el('sv').disabled = true;
     try {
       await api('trips', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=representation' }, body: JSON.stringify({ code, data: t }) });
@@ -325,6 +384,44 @@
       city = { slug: s, name, url }; phState('ok', name);
       if (editing) msg('serr', '');
     } catch (err) { phState(city ? 'ok' : 'none', name); msg('serr', 'Não foi possível guardar a foto. Tente outra vez.'); }
+  });
+  const kb = n => n > 1048576 ? (n / 1048576).toFixed(1).replace('.', ',') + ' MB' : Math.max(1, Math.round(n / 1024)) + ' KB';
+  const safe = s => s.normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^A-Za-z0-9._-]+/g, '-').replace(/^-+|-+$/g, '') || 'ficheiro';
+  async function rmFiles(paths) {
+    await fresh();
+    await fetch(U + '/storage/v1/object/documentos', { method: 'DELETE', headers: { apikey: K, Authorization: 'Bearer ' + ses.a, 'Content-Type': 'application/json' }, body: JSON.stringify({ prefixes: paths }) });
+  }
+  function renderDocs() {
+    const L = el('docs'); L.textContent = '';
+    docs.forEach((f, i) => {
+      const r = document.createElement('div'); r.className = 'df'; r.innerHTML = DOC;
+      const n = document.createElement('div'); n.className = 'fn'; n.textContent = f.name;
+      const s = document.createElement('div'); s.className = 'fs'; s.textContent = kb(f.size);
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = 'Remover';
+      b.addEventListener('click', async () => { docs.splice(i, 1); renderDocs(); rmFiles([f.path]).catch(() => {}); });
+      r.append(n, s, b); L.appendChild(r);
+    });
+  }
+  el('upf').addEventListener('change', async e => {
+    const files = [...e.target.files]; e.target.value = ''; if (!files.length) return;
+    dir = dir || newCode() + newCode(); el('upl').classList.add('busy'); msg('serr');
+    try {
+      for (const f of files) {
+        el('upt').textContent = 'A enviar ' + f.name + '…';
+        if (f.size > 45 * 1048576) throw new Error(f.name + ' é demasiado grande (máximo 45 MB).');
+        const path = dir + '/' + Date.now().toString(36) + '-' + safe(f.name);
+        await fresh();
+        const up = await fetch(U + '/storage/v1/object/documentos/' + path, { method: 'POST', headers: { apikey: K, Authorization: 'Bearer ' + ses.a, 'Content-Type': f.type || 'application/octet-stream', 'x-upsert': 'true' }, body: f });
+        if (!up.ok) throw new Error('Não foi possível enviar ' + f.name + '.');
+        const sg = await fetch(U + '/storage/v1/object/sign/documentos/' + path, { method: 'POST', headers: { apikey: K, Authorization: 'Bearer ' + ses.a, 'Content-Type': 'application/json' }, body: JSON.stringify({ expiresIn: 31536000 }) });
+        const j = await sg.json().catch(() => ({}));
+        if (!sg.ok || !j.signedURL) throw new Error('Não foi possível preparar o link de ' + f.name + '.');
+        docs.push({ name: f.name, size: f.size, type: f.type, path, url: U + '/storage/v1' + j.signedURL });
+        renderDocs();
+      }
+      if (editing) msg('serr', 'Anexos enviados. Carregue em "Guardar alterações" para os mostrar ao cliente.');
+    } catch (err) { msg('serr', err.message); }
+    el('upl').classList.remove('busy'); el('upt').textContent = '+ Adicionar ficheiros (PDF ou imagem)';
   });
   fill({ bg: '2 × 23 kg\n+ 2 malas de mão pequenas' });
   show();
