@@ -87,10 +87,11 @@
   @media print { .copy { display: none; } html { background: none; } [contenteditable] { outline: 0 !important; } }
   .val.s { white-space: pre-line; }
   .none { padding: 14mm 8mm; text-align: center; font-size: 12pt; color: #33475f; line-height: 1.6; }
+  .ld .wrap, .ld .route, .ld svg.sky { visibility: hidden; }
 </style>
 </head>
 <body>
-  <div class="page">
+  <div class="page ld">
   <div class="hero">
     <svg class="sky" viewBox="0 0 794 348" preserveAspectRatio="none">
       <g fill="#fff" opacity=".10">
@@ -144,14 +145,21 @@
     const o = b.textContent; b.textContent = 'Copiado ✓'; setTimeout(() => b.textContent = o, 1600);
   }));
 </script>
+<script src="config.js"></script>
 <script>
-(function () {
+(async function () {
   const q = new URLSearchParams(location.search).get('v');
   const $ = (s, i = 0) => document.querySelectorAll(s)[i];
   let t = null;
-  try { if (q) t = JSON.parse(decodeURIComponent(escape(atob(q.replace(/-/g, '+').replace(/_/g, '/'))))); } catch (e) {}
+  try {
+    if (q && q.length <= 12) {
+      const r = await fetch(window.TEF_URL + '/rest/v1/rpc/get_trip', { method: 'POST', headers: { apikey: window.TEF_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ c: q }) });
+      if (r.ok) t = await r.json();
+    } else if (q) t = JSON.parse(decodeURIComponent(escape(atob(q.replace(/-/g, '+').replace(/_/g, '/')))));
+  } catch (e) {}
+  $('.page').classList.remove('ld');
   if (!t) {
-    $('.wrap').innerHTML = '<div class="card none"><b>Viagem não encontrada.</b><br>O link está incompleto ou foi alterado. Peça um novo link a quem lho enviou.</div>';
+    $('.wrap').innerHTML = '<div class="card none"><b>Viagem não encontrada.</b><br>O link está incompleto ou já não está disponível. Peça um novo link a quem lho enviou.</div>';
     $('.route').style.visibility = 'hidden'; $('svg.sky').style.display = 'none'; return;
   }
   const eur = n => (Number(n) || 0).toFixed(2).replace('.', ',') + ' €';
