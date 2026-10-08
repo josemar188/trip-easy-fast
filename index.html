@@ -2,254 +2,298 @@
 <html lang="pt">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Trip Easy Fast</title>
+<meta name="description" content="Proposta da sua viagem, com valores e meios de pagamento.">
+<meta property="og:title" content="Trip Easy Fast · Proposta de viagem">
+<meta property="og:description" content="Consulte os detalhes, os valores e os meios de pagamento da sua viagem.">
+<meta name="theme-color" content="#0b1626">
 <meta name="robots" content="noindex">
-<meta name="theme-color" content="#0b2a5b">
-<title>Trip Easy Fast · Painel</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%230b1626'/%3E%3Cpath fill='%23c9a45c' transform='rotate(45 12 12) scale(.8) translate(3 3)' d='M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&family=Manrope:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap">
 <style>
+  /* Layout: one centred column, dark "night flight" hero, boarding-pass card overlapping it, then values, payment and the destination photo as the closing image. */
+  :root {
+    --ink: #0b1626; --deep: #14284a; --glow: #2a4f86;
+    --gold: #c9a45c; --gold-2: #e8d3a4; --gold-ink: #8a6a2b;
+    --bg: #f3f4f6; --card: #ffffff; --text: #18212f; --muted: #6c7686; --line: #e5e7eb; --soft: #f6f7f9;
+    --ok: #1f8a62;
+    --display: "Fraunces", "Iowan Old Style", Georgia, serif;
+    --body: "Manrope", "Helvetica Neue", Arial, sans-serif;
+    --mono: "DM Mono", ui-monospace, Menlo, monospace;
+  }
+  .bus { --ink: #0a1f1b; --deep: #133f36; --glow: #1f6b58; --bg: #f2f5f3; --soft: #f4f7f5; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   [hidden] { display: none !important; }
-  body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background: #eef2f8; color: #12263f; padding-bottom: 40px; }
-  header { background: linear-gradient(135deg, #0b2a5b, #1560bd 60%, #38b6e8); color: #fff; padding: 28px 16px 56px; }
-  header > div, main { max-width: 720px; margin: 0 auto; }
-  header > div { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
-  h1 { font-size: 24px; letter-spacing: 1px; } h1 span { color: #ffd166; }
-  header p { margin-top: 6px; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; opacity: .85; }
-  #out { background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 99px; padding: 8px 14px; font: inherit; font-size: 13px; cursor: pointer; }
-  main { padding: 0 16px; margin-top: -36px; display: grid; gap: 16px; }
-  section { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 8px 24px rgba(11,42,91,.10); }
-  h2 { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: #1560bd; margin-bottom: 14px; }
-  .g { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
-  label { display: block; min-width: 0; font-size: 11px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: #7a8ca5; }
-  input, textarea { display: block; width: 100%; min-width: 0; height: 50px; margin-top: 7px; padding: 0 14px; font: inherit; font-size: 16px; font-weight: 600; letter-spacing: 0; text-transform: none; color: #0b2a5b; border: 1.5px solid #dde5ef; border-radius: 12px; background: #fbfcfe; box-shadow: inset 0 1px 2px rgba(11,42,91,.04); -webkit-appearance: none; appearance: none; transition: border-color .15s, box-shadow .15s, background .15s; }
-  input::placeholder, textarea::placeholder { color: #b4c1d2; font-weight: 500; }
-  input[type="date"], input[type="time"] { line-height: 50px; text-align: left; }
-  input::-webkit-date-and-time-value { text-align: left; }
-  input:focus, textarea:focus { outline: none; border-color: #38b6e8; background: #fff; box-shadow: 0 0 0 4px rgba(56,182,232,.18); }
-  .grp { display: grid; gap: 14px; padding: 18px 0; border-top: 1px solid #edf1f6; }
-  .grp:first-of-type { border-top: 0; padding-top: 0; }
-  .gt { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: #0b2a5b; }
-  .gt svg { width: 18px; height: 18px; fill: #1560bd; flex: none; }
-  .r { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-  .r.c { grid-template-columns: 2fr 1fr; }
-  .m { position: relative; display: block; }
-  .m input { padding-right: 36px; text-align: right; font-variant-numeric: tabular-nums; }
-  .m i { position: absolute; right: 14px; top: 50%; transform: translateY(-40%); font-style: normal; font-weight: 700; color: #9aabc0; pointer-events: none; }
-  #co, #cd { text-transform: uppercase; }
-  textarea { height: auto; min-height: 78px; padding: 12px 14px; line-height: 1.45; resize: vertical; }
-  .w2 { grid-column: 1 / -1; }
-  .total { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding: 16px 18px; border-radius: 12px; background: linear-gradient(90deg, #0b2a5b, #1560bd); color: #fff; }
-  .total span { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; }
-  .total b { font-size: 24px; color: #ffd166; font-variant-numeric: tabular-nums; }
-  #link { font-size: 15px; font-weight: 600; word-break: break-all; color: #0b2a5b; background: #f4f7fb; border: 1px dashed #c9d6e6; border-radius: 10px; padding: 14px; user-select: all; }
-  .btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
-  button.b, a.b { flex: 1 1 140px; text-align: center; font: inherit; font-size: 14px; font-weight: 700; padding: 13px 14px; border-radius: 99px; border: 1px solid #1560bd; cursor: pointer; text-decoration: none; background: #fff; color: #1560bd; }
-  .b.pri { background: #1560bd; color: #fff; }
-  .b.wa { background: #1c9a6b; border-color: #1c9a6b; color: #fff; }
-  .b:disabled { opacity: .55; cursor: default; }
-  :focus-visible { outline: 2px solid #ffd166; outline-offset: 2px; }
-  .hint { font-size: 12px; color: #7a8ca5; margin-top: 10px; line-height: 1.5; }
-  .err { font-size: 13px; color: #b3261e; margin-top: 10px; line-height: 1.5; }
-  .it { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 14px 0; border-top: 1px solid #e8eef5; }
-  .it:first-child { border-top: 0; padding-top: 0; }
-  .it .i { flex: 1 1 200px; min-width: 0; }
-  .it .n { font-weight: 700; color: #0b2a5b; }
-  .it .s { font-size: 13px; color: #5a6d87; margin-top: 3px; }
-  .it .a { display: flex; gap: 6px; flex-wrap: wrap; }
-  .it button { font: inherit; font-size: 12px; font-weight: 700; padding: 8px 12px; border-radius: 99px; border: 1px solid #c9d6e6; background: #f4f7fb; color: #0b2a5b; cursor: pointer; }
-  .it button.del { color: #b3261e; }
-  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; margin-bottom: 18px; border-radius: 14px; background: #eef2f8; }
-  .seg button { display: flex; align-items: center; justify-content: center; gap: 8px; height: 46px; border: 0; border-radius: 10px; background: transparent; font: inherit; font-size: 15px; font-weight: 700; color: #7a8ca5; cursor: pointer; transition: background .15s, color .15s; }
-  .seg button svg { width: 18px; height: 18px; fill: currentColor; }
-  .seg button.on { background: #fff; color: #0b2a5b; box-shadow: 0 2px 8px rgba(11,42,91,.12); }
-  body.bus header { background: linear-gradient(135deg, #0c3a35, #127a63 60%, #45c29c); }
-  body.bus h2, body.bus .seg button.on { color: #127a63; }
-  body.bus .gt svg { fill: #127a63; }
-  body.bus .total { background: linear-gradient(90deg, #0c3a35, #127a63); }
-  body.bus button.b, body.bus a.b { border-color: #127a63; color: #127a63; }
-  body.bus .b.wa { color: #fff; border-color: #1c9a6b; }
-  body.bus .b.pri { background: #127a63; border-color: #127a63; color: #fff; }
-  body.bus input:focus, body.bus textarea:focus { border-color: #45c29c; box-shadow: 0 0 0 4px rgba(69,194,156,.2); }
-  .tp { display: inline-flex; vertical-align: -3px; margin-right: 6px; } .tp svg { width: 16px; height: 16px; fill: #1560bd; }
-  .tp.bus svg { fill: #127a63; }
-  .ph { display: flex; align-items: center; gap: 14px; padding: 12px; border-radius: 14px; border: 1.5px dashed #cfd9e6; background: #fbfcfe; }
-  .ph.ok { border-style: solid; border-color: #bfe3d3; background: #f1faf6; }
-  .ph .th { flex: none; width: 64px; height: 64px; border-radius: 10px; background: #e9eef5 center / cover no-repeat; display: grid; place-items: center; }
-  .ph .th svg { width: 24px; height: 24px; fill: #9aabc0; }
-  .ph .phx { flex: 1; min-width: 0; }
-  .ph .pht { font-size: 14px; font-weight: 700; color: #0b2a5b; }
-  .ph.ok .pht { color: #17694f; }
-  .ph .phs { margin-top: 2px; font-size: 12px; line-height: 1.4; color: #6c7c92; }
-  .ph .phb { display: inline-block; margin-top: 8px; padding: 7px 14px; border-radius: 99px; border: 1px solid #c9d6e6; background: #fff; font-size: 12px; font-weight: 700; letter-spacing: 0; text-transform: none; color: #0b2a5b; cursor: pointer; }
-  .ph .phb:focus-within { outline: 2px solid #38b6e8; outline-offset: 2px; }
+  html { background: var(--bg); }
+  body { min-height: 100vh; background: var(--bg); color: var(--text); font-family: var(--body); font-size: 15px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+  .col { max-width: 640px; margin: 0 auto; padding-inline: 16px; }
+
+  /* hero */
+  .hero { position: relative; overflow: hidden; color: #fff; padding: calc(env(safe-area-inset-top, 0px) + 22px) 0 92px; background: radial-gradient(120% 90% at 85% 0%, var(--glow) 0%, transparent 60%), linear-gradient(160deg, var(--deep) 0%, var(--ink) 70%); }
+  .hero::after { content: ""; position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.55) 1px, transparent 1.2px); background-size: 46px 46px; opacity: .07; pointer-events: none; }
+  .top { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+  .brand { display: flex; align-items: baseline; gap: 8px; }
+  .brand b { font-family: var(--display); font-style: italic; font-weight: 500; font-size: 22px; letter-spacing: -.2px; }
+  .brand b span { font-family: var(--body); font-style: normal; font-weight: 800; font-size: 11px; letter-spacing: 3px; color: var(--gold); margin-left: 4px; vertical-align: 3px; }
+  .brand small { font-size: 11px; letter-spacing: 1.5px; color: rgba(255,255,255,.6); }
+  .mode { display: inline-flex; align-items: center; gap: 7px; padding: 6px 12px; border-radius: 99px; border: 1px solid rgba(201,164,92,.45); color: var(--gold-2); font-size: 10.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+  .mode svg { width: 13px; height: 13px; fill: currentColor; }
+  .hello { position: relative; z-index: 1; margin-top: 34px; }
+  .eyebrow { font-size: 11px; font-weight: 700; letter-spacing: 2.6px; text-transform: uppercase; color: var(--gold); }
+  .hello h1 { margin-top: 8px; font-family: var(--display); font-weight: 400; font-size: clamp(30px, 8vw, 42px); line-height: 1.1; letter-spacing: -.5px; text-wrap: balance; }
+  .hello h1 em { font-style: italic; color: var(--gold-2); }
+  .route { position: relative; z-index: 1; display: grid; grid-template-columns: auto 1fr auto; align-items: end; gap: 10px; margin-top: 34px; }
+  .city .code { font-family: var(--display); font-weight: 600; font-size: clamp(44px, 13vw, 64px); line-height: .9; letter-spacing: -1px; }
+  .city .code.long { font-size: clamp(26px, 7.5vw, 38px); letter-spacing: -.3px; }
+  .city .name { margin-top: 8px; font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,.62); }
+  .city.r { text-align: right; }
+  .path { height: 64px; align-self: center; min-width: 0; }
+  .path svg { width: 100%; height: 100%; overflow: visible; }
+
+  /* boarding pass */
+  .pass { position: relative; margin-top: -64px; background: var(--card); border-radius: 22px; box-shadow: 0 1px 0 rgba(255,255,255,.6) inset, 0 24px 48px -20px rgba(11,22,38,.35), 0 2px 6px rgba(11,22,38,.06); }
+  .pass .main { display: grid; grid-template-columns: 1fr 1fr; gap: 20px 16px; padding: 24px 24px 22px; }
+  .lbl { font-size: 10.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  .val { margin-top: 4px; line-height: 36px; font-family: var(--display); font-size: 24px; font-weight: 600; letter-spacing: -.3px; color: var(--text); font-variant-numeric: lining-nums tabular-nums; }
+  .perf { position: relative; height: 22px; }
+  .perf::before { content: ""; position: absolute; left: 22px; right: 22px; top: 50%; border-top: 2px dashed var(--line); }
+  .perf::after, .perf i { content: ""; position: absolute; top: 0; width: 22px; height: 22px; border-radius: 50%; background: var(--bg); }
+  .perf::after { left: -11px; } .perf i { right: -11px; }
+  .pass .main .wide { grid-column: 1 / -1; }
+  @media (min-width: 700px) { .pass .main .wide { grid-column: auto; } }
+  .pass .stub { display: flex; gap: 14px; align-items: flex-start; padding: 18px 24px 24px; }
+  .pass .stub .val { font-family: var(--body); font-size: 15px; font-weight: 600; line-height: 1.45; white-space: pre-line; }
+  .ic { display: grid; place-items: center; flex: none; width: 40px; height: 40px; border-radius: 12px; background: var(--soft); border: 1px solid var(--line); }
+  .ic svg { width: 19px; height: 19px; fill: var(--gold-ink); }
+
+  /* sections */
+  section { margin-top: 40px; }
+  .sh { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 4px 14px; }
+  .sh h2 { font-family: var(--display); font-weight: 400; font-size: 26px; letter-spacing: -.3px; }
+  .sh h2 em { font-style: italic; }
+  .sh span { font-size: 11px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 20px; box-shadow: 0 10px 30px -18px rgba(11,22,38,.25); }
+  .prices { padding: 8px 24px 0; overflow: hidden; }
+  .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 15px 0; border-bottom: 1px solid var(--line); }
+  .row span { color: var(--muted); font-weight: 500; }
+  .row b { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .row.d b { color: var(--ok); }
+  .row.last { border-bottom: 0; }
+  .total { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin: 8px -24px 0; padding: 22px 24px; background: linear-gradient(135deg, var(--deep), var(--ink)); color: #fff; }
+  .total span { font-size: 11px; font-weight: 700; letter-spacing: 2.6px; text-transform: uppercase; color: rgba(255,255,255,.7); }
+  .total b { font-family: var(--display); font-weight: 600; font-size: 36px; letter-spacing: -.5px; color: var(--gold-2); font-variant-numeric: lining-nums tabular-nums; }
+
+  .pay { display: grid; gap: 12px; }
+  .p { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: center; padding: 18px; }
+  .p .t { font-weight: 700; font-size: 15px; }
+  .p .d { grid-column: 2; font-size: 12px; color: var(--muted); }
+  .p .vv { grid-column: 1 / -1; margin-top: 12px; font-family: var(--mono); font-size: 15px; font-weight: 500; letter-spacing: .3px; color: var(--text); background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; overflow-wrap: break-word; -webkit-user-select: all; user-select: all; }
+  .p .vv a { color: inherit; text-decoration: none; }
+  .p .act { grid-column: 1 / -1; margin-top: 10px; }
+  .btn { display: block; width: 100%; padding: 14px; border-radius: 99px; font: inherit; font-size: 14px; font-weight: 700; letter-spacing: .3px; text-align: center; text-decoration: none; cursor: pointer; transition: transform .12s, background .15s; }
+  .btn:active { transform: scale(.98); }
+  .btn.ghost { background: transparent; color: var(--text); border: 1px solid #d5d9e0; }
+  .btn.ghost:hover { background: var(--soft); }
+  .btn.gold { background: linear-gradient(135deg, #d9b872, var(--gold)); color: #1b1407; border: 0; box-shadow: 0 8px 20px -10px rgba(138,106,43,.7); }
+  .btn:focus-visible { outline: 2px solid var(--gold); outline-offset: 3px; }
+
+  /* destination photo */
+  .dest { position: relative; margin-top: 40px; border-radius: 24px; overflow: hidden; aspect-ratio: 4 / 5; max-height: 560px; width: 100%; background: var(--ink); box-shadow: 0 24px 48px -24px rgba(11,22,38,.5); }
+  .dest img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .dest::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(11,22,38,0) 40%, rgba(11,22,38,.85) 100%); }
+  .dest .cap { position: absolute; z-index: 1; left: 24px; right: 24px; bottom: 24px; color: #fff; }
+  .dest .cap .eyebrow { color: var(--gold-2); }
+  .dest .cap h3 { margin-top: 6px; font-family: var(--display); font-weight: 400; font-size: clamp(34px, 10vw, 52px); line-height: 1; letter-spacing: -.8px; }
+  .dest .cap h3 em { font-style: italic; }
+  .dest .cap p { margin-top: 10px; font-size: 14px; color: rgba(255,255,255,.78); }
+
+  .note { display: flex; gap: 12px; align-items: flex-start; margin-top: 12px; padding: 14px 16px; border-radius: 16px; background: #fbf6ea; border: 1px solid #ecdcb4; color: #5b4618; font-size: 13.5px; line-height: 1.5; }
+  .note svg { flex: none; width: 18px; height: 18px; margin-top: 1px; fill: var(--gold-ink); }
+  .note b { color: #3f300c; }
+  footer { padding: 36px 0 calc(env(safe-area-inset-bottom, 0px) + 36px); text-align: center; }
+  footer b { font-family: var(--display); font-style: italic; font-weight: 500; font-size: 17px; }
+  footer p { margin-top: 4px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
+
+  .none { position: relative; margin-top: -64px; padding: 36px 26px 30px; text-align: center; border-radius: 22px; box-shadow: 0 24px 48px -20px rgba(11,22,38,.35), 0 2px 6px rgba(11,22,38,.06); }
+  .none .seal { display: grid; place-items: center; width: 64px; height: 64px; margin: 0 auto; border-radius: 50%; background: radial-gradient(circle at 30% 25%, #fff 0%, #f6efe0 70%); border: 1px solid #ecdcb4; }
+  .none .seal svg { width: 28px; height: 28px; fill: var(--gold-ink); }
+  .none h2 { margin-top: 18px; font-family: var(--display); font-weight: 400; font-size: 26px; line-height: 1.2; letter-spacing: -.3px; text-wrap: balance; }
+  .none h2 em { font-style: italic; }
+  .none p { max-width: 34ch; margin: 10px auto 0; color: var(--muted); font-size: 15px; }
+  .none .rule { width: 40px; height: 1px; margin: 22px auto; background: var(--gold); opacity: .6; }
+  .none .btn { max-width: 300px; margin: 0 auto; }
+  .none small { display: block; margin-top: 14px; font-size: 12px; color: var(--muted); }
+  .ld main, .ld .hello, .ld .route { visibility: hidden; }
+
+  @media (min-width: 700px) {
+    .pass .main { grid-template-columns: repeat(3, 1fr); }
+    .p { grid-template-columns: 40px 1fr 190px; grid-template-areas: "ic t act" "ic d act" "vv vv vv"; column-gap: 16px; row-gap: 2px; padding: 20px 22px; }
+    .p .ic { grid-area: ic; }
+    .p .t { grid-area: t; align-self: end; }
+    .p .d { grid-area: d; align-self: start; }
+    .p .act { grid-area: act; align-self: center; margin: 0; }
+    .p .vv { grid-area: vv; margin-top: 14px; font-size: 15px; }
+    .dest { aspect-ratio: 16 / 10; }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .pass, section, .dest { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; }
+    section { animation-delay: .08s; } .dest { animation-delay: .16s; }
+    @keyframes rise { from { opacity: .001; transform: translateY(14px); } }
+  }
 </style>
 </head>
-<body>
-<header><div><div><h1>TRIP EASY <span>FAST</span></h1><p id="sub">Painel de viagens</p></div><button id="out" type="button" hidden>Sair</button></div></header>
-<main>
-  <section id="login" hidden>
-    <h2>Entrar</h2>
-    <form id="lf" class="g">
-      <label class="w2">Email<input id="em" type="email" autocomplete="username" required></label>
-      <label class="w2">Palavra-passe<input id="pw" type="password" autocomplete="current-password" required></label>
-      <div class="btns w2"><button class="b pri" type="submit">Entrar</button></div>
-    </form>
-    <p class="err" id="lerr" hidden></p>
-  </section>
-
-  <div id="app" hidden style="display:grid;gap:16px">
-    <section>
-      <h2 id="ft">Nova viagem</h2>
-      <div class="seg" role="radiogroup" aria-label="Tipo de viagem"><button type="button" role="radio" data-tp="aviao" class="on" aria-checked="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>Avião</button><button type="button" role="radio" data-tp="autocarro" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a3 3 0 0 1 3 3v12a2 2 0 0 1-1 1.7V21a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-2H7v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.3A2 2 0 0 1 3 17V5a3 3 0 0 1 3-3zm0 4v5h12V6H6zm1.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>Autocarro</button></div>
-      <div class="grp">
-        <div class="gt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9zm0 2c-4.4 0-8 2.2-8 5v2h16v-2c0-2.8-3.6-5-8-5z"/></svg>Cliente</div>
-        <label>Nome do cliente (opcional)<input id="cl" autocomplete="off" placeholder="Ex.: Maria Silva"></label>
+<body class="ld">
+  <header class="hero">
+    <div class="col">
+      <div class="top">
+        <div class="brand"><b>Trip Easy<span>FAST</span></b><small>by Josemar Lima</small></div>
+        <div class="mode" id="mode"></div>
       </div>
-      <div class="grp">
-        <div class="gt" id="vt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>Voo</div>
-        <div class="r"><label>Data<input id="dt" type="date"></label><label>Hora<input id="hr" type="time"></label></div>
-        <div class="r c"><label>Origem<input id="o" placeholder="Praia"></label><label>Código (opc.)<input id="co" maxlength="4" placeholder="RAI"></label></div>
-        <div class="r c"><label>Destino<input id="d" placeholder="Lisboa"></label><label>Código (opc.)<input id="cd" maxlength="4" placeholder="LIS"></label></div>
-        <div class="ph" id="ph" hidden>
-          <div class="th" id="phi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h3l2-2h6l2 2h3a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2zm8 3a5 5 0 1 0 0 10 5 5 0 0 0 0-10zm0 2a3 3 0 1 1 0 6 3 3 0 0 1 0-6z"/></svg></div>
-          <div class="phx"><div class="pht" id="pht"></div><div class="phs" id="phs"></div><label class="phb" id="phb"><input type="file" id="phf" accept="image/*" hidden><span id="phl">Carregar foto</span></label></div>
+      <div class="hello">
+        <div class="eyebrow" id="eyebrow">Reserva pendente</div>
+        <h1 id="hello">A <em>proposta</em> da sua viagem</h1>
+      </div>
+      <div class="route">
+        <div class="city"><div class="code" id="co"></div><div class="name" id="on">Origem</div></div>
+        <div class="path"><svg id="path" viewBox="0 0 200 64" preserveAspectRatio="none" aria-hidden="true"></svg></div>
+        <div class="city r"><div class="code" id="cd"></div><div class="name" id="dn">Destino</div></div>
+      </div>
+    </div>
+  </header>
+
+  <main class="col" id="main">
+    <div class="pass">
+      <div class="main">
+        <div><div class="lbl">Data</div><div class="val" id="dt"></div></div>
+        <div><div class="lbl">Partida</div><div class="val" id="hr"></div></div>
+        <div class="wide"><div class="lbl">Referência</div><div class="val" id="ref" style="font-family:var(--mono);font-size:21px;font-weight:500;line-height:36px;letter-spacing:1px"></div></div>
+      </div>
+      <div class="perf"><i></i></div>
+      <div class="stub">
+        <span class="ic"><svg viewBox="0 0 24 24"><path d="M9 3h6a1 1 0 0 1 1 1v2h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2V4a1 1 0 0 1 1-1zm1 3h4V5h-4v1z"/></svg></span>
+        <div><div class="lbl">Bagagem incluída</div><div class="val" id="bg"></div></div>
+      </div>
+    </div>
+
+    <section>
+      <div class="sh"><h2>Valores</h2><span>Em euros</span></div>
+      <div class="card prices">
+        <div class="row" id="r1"><span>Viagem</span><b id="v1"></b></div>
+        <div class="row" id="r2"><span>Taxa de operação</span><b id="v2"></b></div>
+        <div class="row" id="r3"><span>Taxa de check-in</span><b id="v3"></b></div>
+        <div class="row d" id="r4"><span>Desconto</span><b id="v4"></b></div>
+        <div class="total"><span>Total a pagar</span><b id="total"></b></div>
+      </div>
+      <div class="note" role="note">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm-1 9v6h2v-6h-2zm0-4v2h2V7h-2z"/></svg>
+        <p><b>Preço ainda não garantido.</b> Os valores podem mudar até a reserva ser paga, porque dependem da disponibilidade da <span id="carrier">companhia aérea</span>. Ao pagar, o preço fica confirmado.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="sh"><h2>Como <em>pagar</em></h2><span>3 opções</span></div>
+      <div class="pay">
+        <div class="card p">
+          <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2 2 7v2h20V7L12 2zM4 11v7h3v-7H4zm6.5 0v7h3v-7h-3zM17 11v7h3v-7h-3zM2 20v2h20v-2H2z"/></svg></span>
+          <div class="t">Transferência bancária</div><div class="d">IBAN</div>
+          <div class="vv">PT50 0018 0003 5110 8835 0203 1</div>
+          <div class="act"><button class="btn ghost copy" type="button" data-v="PT50001800035110883502031">Copiar IBAN</button></div>
+        </div>
+        <div class="card p">
+          <span class="ic"><svg viewBox="0 0 24 24"><path d="M7 1h10a2 2 0 0 1 2 2v18a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V3a2 2 0 0 1 2-2zm0 3v14h10V4H7zm5 15a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/></svg></span>
+          <div class="t">MB WAY</div><div class="d">Número</div>
+          <div class="vv">+351 961 664 286</div>
+          <div class="act"><button class="btn ghost copy" type="button" data-v="+351961664286">Copiar número</button></div>
+        </div>
+        <div class="card p">
+          <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 1 3 5v6c0 5.5 3.8 10.7 9 12 5.2-1.3 9-6.5 9-12V5l-9-4zm-1.2 15.2-4-4 1.4-1.4 2.6 2.6 5.8-5.8 1.4 1.4-7.2 7.2z"/></svg></span>
+          <div class="t">Pagamento online</div><div class="d">Cartão, via myPOS</div>
+          <div class="vv"><a href="https://mypos.com/@lxreabita" target="_blank" rel="noopener">mypos.com/@lxreabita</a></div>
+          <div class="act"><a class="btn gold" href="https://mypos.com/@lxreabita" target="_blank" rel="noopener">Pagar agora</a></div>
         </div>
       </div>
-      <div class="grp">
-        <div class="gt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6a1 1 0 0 1 1 1v2h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2V4a1 1 0 0 1 1-1zm1 3h4V5h-4v1z"/></svg>Bagagem</div>
-        <label>Descrição<textarea id="bg" placeholder="Ex.: 2 × 23 kg + 2 malas de mão"></textarea></label>
-      </div>
-      <div class="grp">
-        <div class="gt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 18.5A6.5 6.5 0 0 1 9.2 15H15v-2H8.6a6.4 6.4 0 0 1 0-2H15V9H9.2A6.5 6.5 0 0 1 15 5.5c1.3 0 2.5.4 3.5 1l1-1.8A8.5 8.5 0 0 0 7 9H4v2h2.6a8.6 8.6 0 0 0 0 2H4v2h3a8.5 8.5 0 0 0 12.5 4.3l-1-1.8c-1 .6-2.2 1-3.5 1z"/></svg>Valores</div>
-        <div class="r"><label>Viagem<span class="m"><input id="v" inputmode="decimal" placeholder="0,00"><i>€</i></span></label><label>Taxa operação<span class="m"><input id="to" inputmode="decimal" placeholder="0,00"><i>€</i></span></label></div>
-        <div class="r"><label>Taxa check-in<span class="m"><input id="tc" inputmode="decimal" placeholder="0,00"><i>€</i></span></label><label>Desconto<span class="m"><input id="ds" inputmode="decimal" placeholder="0,00"><i>€</i></span></label></div>
-      </div>
-      <div class="total"><span>Total</span><b id="tot"></b></div>
-      <div class="btns">
-        <button class="b pri" id="sv" type="button">Criar link</button>
-        <button class="b" id="nw" type="button" hidden>Cancelar edição</button>
-      </div>
-      <p class="hint">O total é calculado automaticamente. Taxas ou desconto a zero não aparecem ao cliente.</p>
-      <p class="err" id="serr" hidden></p>
     </section>
 
-    <section id="res" hidden>
-      <h2>Link para o cliente</h2>
-      <div id="link"></div>
-      <div class="btns">
-        <button class="b pri" id="cp" type="button">Copiar link</button>
-        <a class="b wa" id="wa" target="_blank" rel="noopener">Enviar por WhatsApp</a>
-        <a class="b" id="op" target="_blank" rel="noopener">Ver página</a>
-      </div>
-    </section>
+    <figure class="dest" id="dest" hidden>
+      <img id="photo" alt="">
+      <figcaption class="cap"><div class="eyebrow">O seu destino</div><h3 id="dname"></h3><p id="dline"></p></figcaption>
+    </figure>
+  </main>
 
-    <section>
-      <h2>Viagens criadas</h2>
-      <div id="list"><p class="hint">A carregar…</p></div>
-    </section>
-  </div>
+  <footer class="col"><b>Trip Easy Fast</b><p id="foot">by Josemar Lima · Boa viagem</p></footer>
 
-  <section id="cfg" hidden><h2>Configuração em falta</h2><p class="hint" style="font-size:14px">Abra o ficheiro <b>config.js</b> e preencha o endereço do projeto Supabase e a chave pública.</p></section>
-</main>
 <script src="config.js"></script>
 <script>
-  const U = window.TEF_URL || '', K = window.TEF_KEY || '';
-  const ids = ['cl','dt','hr','o','co','d','cd','bg','v','to','tc','ds'], money = ['v','to','tc','ds'];
-  const el = id => document.getElementById(id);
-  const num = s => Math.abs(parseFloat(String(s).replace(/\s/g,'').replace(',','.'))) || 0;
-  const eur = n => (Number(n) || 0).toFixed(2).replace('.', ',') + ' €';
-  const tot = t => (t.v || 0) + (t.to || 0) + (t.tc || 0) - (t.ds || 0);
-  const pt = s => { const d = String(s || '').split('-'); return d.length === 3 ? d[2] + '/' + d[1] + '/' + d[0] : (s || ''); };
-  const base = location.href.split(/[?#]/)[0].replace(/criar\.html$/, '') + (location.protocol === 'file:' ? 'index.html' : '');
-  const urlOf = c => base + '?v=' + c;
-  const msg = (id, m) => { el(id).textContent = m || ''; el(id).hidden = !m; };
-  let ses = null, editing = null, trips = [], tp = 'aviao';
-  const PL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>', BU = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a3 3 0 0 1 3 3v12a2 2 0 0 1-1 1.7V21a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-2H7v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.3A2 2 0 0 1 3 17V5a3 3 0 0 1 3-3zm0 4v5h12V6H6zm1.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>';
-  function setTp(x) {
-    tp = x === 'autocarro' ? 'autocarro' : 'aviao'; const bus = tp === 'autocarro';
-    document.body.classList.toggle('bus', bus);
-    document.querySelectorAll('.seg button').forEach(b => { const on = b.dataset.tp === tp; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
-    el('vt').innerHTML = (bus ? BU : PL) + (bus ? 'Autocarro' : 'Voo');
-    el('o').placeholder = bus ? 'Lisboa' : 'Praia'; el('d').placeholder = bus ? 'Porto' : 'Lisboa';
-    el('co').placeholder = bus ? '' : 'RAI'; el('cd').placeholder = bus ? '' : 'LIS';
-    document.querySelector('meta[name=theme-color]').content = bus ? '#0c3a35' : '#0b2a5b';
+(async function () {
+  const $ = id => document.getElementById(id);
+  const PLANE = '<path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>';
+  const BUS = '<path d="M6 2h12a3 3 0 0 1 3 3v12a2 2 0 0 1-1 1.7V21a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-2H7v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.3A2 2 0 0 1 3 17V5a3 3 0 0 1 3-3zm0 4v5h12V6H6zm1.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>';
+  const q = new URLSearchParams(location.search).get('v');
+  let t = null;
+  try {
+    if (q && q.length <= 12) {
+      const r = await fetch(window.TEF_URL + '/rest/v1/rpc/get_trip', { method: 'POST', headers: { apikey: window.TEF_KEY, 'Content-Type': 'application/json' }, body: JSON.stringify({ c: q }) });
+      if (r.ok) t = await r.json();
+    } else if (q) t = JSON.parse(decodeURIComponent(escape(atob(q.replace(/-/g, '+').replace(/_/g, '/')))));
+  } catch (e) {}
+  document.body.classList.remove('ld');
+  if (!t) {
+    const wa = 'https://wa.me/351961664286?text=' + encodeURIComponent('Olá Josemar, o link da minha viagem não está a abrir. Pode enviar-me um novo, por favor?');
+    $('main').innerHTML = '<div class="card none">'
+      + '<div class="seal"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16zm4.2 3.8-2.6 5.8-5.8 2.6 2.6-5.8 5.8-2.6zM12 10.8a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4z"/></svg></div>'
+      + '<h2>Este link já não <em>leva a lado nenhum</em></h2>'
+      + '<p>Pode estar incompleto, ou a proposta pode ter sido atualizada entretanto.</p>'
+      + '<div class="rule"></div>'
+      + '<a class="btn gold" href="' + wa + '" target="_blank" rel="noopener">Pedir novo link</a>'
+      + '<small>Se copiou o link de uma mensagem, confirme que o copiou por inteiro.</small></div>';
+    document.querySelector('.route').hidden = true; $('mode').hidden = true;
+    $('eyebrow').textContent = 'Ligação indisponível';
+    $('hello').innerHTML = 'Não encontrámos <em>esta viagem</em>';
+    document.title = 'Trip Easy Fast'; return;
   }
-  try { ses = JSON.parse(localStorage.getItem('tef_ses')); } catch (e) {}
-  function keep(s) { ses = s; try { s ? localStorage.setItem('tef_ses', JSON.stringify(s)) : localStorage.removeItem('tef_ses'); } catch (e) {} }
-
-  async function auth(grant, body) {
-    const r = await fetch(U + '/auth/v1/token?grant_type=' + grant, { method: 'POST', headers: { apikey: K, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
-    const j = await r.json().catch(() => ({}));
-    if (!r.ok) throw new Error(r.status === 400 ? 'Email ou palavra-passe incorretos.' : (j.msg || j.error_description || 'Não foi possível entrar.'));
-    keep({ a: j.access_token, r: j.refresh_token, e: Date.now() + j.expires_in * 1000 - 60000 });
+  const bus = t.tp === 'autocarro';
+  if (bus) { document.body.classList.add('bus'); document.querySelector('meta[name=theme-color]').content = '#0a1f1b'; }
+  const eur = n => (Number(n) || 0).toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
+  const first = String(t.cl || '').trim().split(/\s+/)[0];
+  $('mode').innerHTML = '<svg viewBox="0 0 24 24">' + (bus ? BUS : PLANE) + '</svg>' + (bus ? 'Autocarro' : 'Avião');
+  $('eyebrow').textContent = t.cl ? 'Reserva pendente · ' + t.cl : 'Reserva pendente';
+  $('hello').innerHTML = first ? 'Olá ' + first.replace(/[<>&]/g, '') + ', aqui está a <em>proposta</em> da sua viagem' : 'A <em>proposta</em> da sua viagem';
+  const setCity = (codeEl, nameEl, code, city, word) => {
+    codeEl.textContent = code || city || ''; if (!code) codeEl.classList.add('long');
+    nameEl.textContent = code ? city + ' · ' + word : word;
+  };
+  setCity($('co'), $('on'), t.co, t.o, 'Origem');
+  setCity($('cd'), $('dn'), t.cd, t.d, 'Destino');
+  $('path').innerHTML = bus
+    ? '<line x1="4" y1="44" x2="196" y2="44" stroke="#c9a45c" stroke-width="1.5" stroke-dasharray="6 6" vector-effect="non-scaling-stroke"/><circle cx="4" cy="44" r="3" fill="#c9a45c"/><circle cx="196" cy="44" r="3" fill="#c9a45c"/>'
+    : '<path d="M4 54 Q100 -6 196 54" fill="none" stroke="#c9a45c" stroke-width="1.5" stroke-dasharray="2 6" stroke-linecap="round" vector-effect="non-scaling-stroke"/><circle cx="4" cy="54" r="3" fill="#c9a45c"/><circle cx="196" cy="54" r="3" fill="#c9a45c"/>';
+  const ic = document.createElement('div');
+  ic.style.cssText = 'position:absolute;left:50%;top:' + (bus ? '44px' : '24px') + ';transform:translate(-50%,-50%)' + (bus ? '' : ' rotate(90deg)') + ';width:26px;height:26px';
+  ic.innerHTML = '<svg viewBox="0 0 24 24" width="26" height="26" fill="#fff">' + (bus ? BUS : PLANE) + '</svg>';
+  const pathBox = document.querySelector('.path'); pathBox.style.position = 'relative'; pathBox.appendChild(ic);
+  const d = String(t.dt || '').split('-');
+  $('dt').textContent = d.length === 3 ? d[2] + '/' + d[1] + '/' + d[0] : (t.dt || '—');
+  $('hr').textContent = t.hr || '—';
+  $('ref').textContent = q && q.length <= 12 ? q.toUpperCase() : '—';
+  $('bg').textContent = t.bg || '—';
+  const v = [t.v, t.to, t.tc, t.ds].map(x => Number(x) || 0);
+  $('v1').textContent = eur(v[0]); $('v2').textContent = eur(v[1]); $('v3').textContent = eur(v[2]); $('v4').textContent = '−' + eur(v[3]);
+  $('r2').hidden = !v[1]; $('r3').hidden = !v[2]; $('r4').hidden = !v[3];
+  const vis = ['r1','r2','r3','r4'].filter(id => !$(id).hidden); $(vis[vis.length - 1]).classList.add('last');
+  $('total').textContent = eur(v[0] + v[1] + v[2] - v[3]);
+  if (t.ph) {
+    $('photo').src = t.ph; $('photo').alt = 'Fotografia de ' + (t.d || 'destino');
+    $('dname').innerHTML = ''; $('dname').append(document.createTextNode(t.d || ''));
+    $('dline').textContent = 'Desejamos-lhe uma excelente viagem' + (first ? ', ' + first : '') + '.';
+    $('photo').onerror = () => $('dest').hidden = true;
+    $('dest').hidden = false;
   }
-  async function fresh() {
-    if (ses && Date.now() > ses.e) { try { await auth('refresh_token', { refresh_token: ses.r }); } catch (e) { keep(null); show(); throw new Error('A sessão expirou. Entre novamente.'); } }
-  }
-  async function api(path, opt = {}) {
-    await fresh();
-    const r = await fetch(U + '/rest/v1/' + path, { ...opt, headers: { apikey: K, Authorization: 'Bearer ' + ses.a, 'Content-Type': 'application/json', ...(opt.headers || {}) } });
-    if (r.status === 401) { keep(null); show(); throw new Error('A sessão expirou. Entre novamente.'); }
-    if (!r.ok) throw new Error('Não foi possível guardar (' + r.status + '). Tente outra vez.');
-    return r.status === 204 ? null : r.json();
-  }
-
-  let city = null, ct = null;
-  const slug = s => String(s || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
-  function phState(st, name) {
-    const box = el('ph'); box.hidden = false; box.classList.toggle('ok', st === 'ok');
-    el('phi').style.backgroundImage = st === 'ok' && city ? 'url("' + city.url + '")' : '';
-    el('phi').firstElementChild.style.display = st === 'ok' ? 'none' : '';
-    const T = {
-      load: ['A procurar foto de ' + name + '…', '', false],
-      up: ['A guardar a foto de ' + name + '…', 'Pode demorar alguns segundos.', false],
-      ok: ['✓ Já tem foto de ' + name, 'Vai aparecer automaticamente no fim da página do cliente.', 'Trocar foto'],
-      none: ['Ainda não há foto de ' + name, 'Carregue uma (opcional). Fica guardada e é usada nas próximas viagens para ' + name + '.', 'Carregar foto'],
-      err: ['Não foi possível verificar a foto', 'Pode carregar uma na mesma.', 'Carregar foto']
-    }[st];
-    el('pht').textContent = T[0]; el('phs').textContent = T[1]; el('phs').hidden = !T[1];
-    el('phb').hidden = !T[2]; if (T[2]) el('phl').textContent = T[2];
-  }
-  async function checkCity() {
-    const name = el('d').value.trim(), s = slug(name); city = null;
-    if (!s) { el('ph').hidden = true; return; }
-    phState('load', name);
-    try {
-      const r = await api('cities?slug=eq.' + s + '&select=slug,name,url');
-      if (slug(el('d').value) !== s) return;
-      city = r[0] || null; phState(city ? 'ok' : 'none', city ? city.name : name);
-    } catch (e) { phState('err', name); }
-  }
-  async function shrink(f) {
-    const img = await new Promise((res, rej) => { const i = new Image(); i.onload = () => res(i); i.onerror = rej; i.src = URL.createObjectURL(f); });
-    const k = Math.min(1, 1800 / Math.max(img.naturalWidth, img.naturalHeight));
-    const c = document.createElement('canvas'); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
-    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
-    return new Promise(res => c.toBlob(res, 'image/jpeg', .84));
-  }
-  function read() {
-    const t = { tp };
-    ids.forEach(i => { const x = el(i).value.trim(); t[i] = money.includes(i) ? num(x) : x; });
-    t.co = t.co.toUpperCase(); t.cd = t.cd.toUpperCase();
-    const s = slug(t.d); if (city && city.slug === s) t.ph = city.url;
-    return t;
-  }
-  function fill(t) {
-    setTp(t.tp); setTimeout(checkCity, 0);
-    ids.forEach(i => el(i).value = money.includes(i) ? (t[i] ? String(t[i].toFixed(2)).replace('.', ',') : '') : (t[i] || ''));
-    el('tot').textContent = eur(tot(read()));
-  }
-  function setEdit(code) {
-    editing = code;
-    el('ft').textContent = code ? 'Editar viagem ' + code : 'Nova viagem';
-    el('sv').textContent = code ? 'Guardar alterações' : 'Criar link';
-    el('nw').hidden = !code;
-  }
-  function showLink(code, t) {
-    const url = urlOf(code);
-    el('res').hidden = false; el('link').textContent = url; el('op').href = url;
-    el('wa').href = 'https://wa.me/?text=' + encodeURIComponent('Olá' + (t.cl ? ' ' + t.cl : '') + '! Segue a proposta da sua viagem ' + (t.tp === 'autocarro' ? 'de autocarro ' : '') + t.o + ' → ' + t.d + (t.dt ? ' de ' + pt(t.dt) : '') + ':\n' + url);
-  }
+  if (bus) $('carrier').textContent = 'transportadora';
+  if (bus) $('foot').textContent = 'by Josemar Lima · Boa viagem de autocarro';
+  document.title = 'Trip Easy Fast · ' + (t.o || '') + ' → ' + (t.d || '');
   function copyText(text) {
     // iPhone (Safari, Brave, Chrome): o método antigo, feito logo no toque, é o mais fiável
     let ok = false;
@@ -267,84 +311,13 @@
     if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(() => {});
     return ok || !!(navigator.clipboard && navigator.clipboard.writeText);
   }
-  function copy(text, btn, label) {
-    btn.textContent = copyText(text) ? 'Copiado ✓' : 'Selecione e copie o link';
-    setTimeout(() => btn.textContent = label, 1800);
-  }
-  function newCode() {
-    const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', r = crypto.getRandomValues(new Uint8Array(6));
-    return Array.from(r, x => A[x % A.length]).join('');
-  }
-
-  function render() {
-    const L = el('list'); L.textContent = '';
-    if (!trips.length) { const p = document.createElement('p'); p.className = 'hint'; p.textContent = 'Ainda não criou nenhuma viagem.'; L.appendChild(p); return; }
-    trips.forEach(row => {
-      const t = row.data, it = document.createElement('div'); it.className = 'it';
-      const i = document.createElement('div'); i.className = 'i';
-      const n = document.createElement('div'); n.className = 'n'; n.textContent = (t.cl || 'Sem nome') + ' · ' + (t.o || '') + ' → ' + (t.d || '');
-      const s = document.createElement('div'); s.className = 's'; s.textContent = [pt(t.dt), t.hr, eur(tot(t)), row.code].filter(Boolean).join(' · ');
-      const ti = document.createElement('span'); ti.className = 'tp' + (t.tp === 'autocarro' ? ' bus' : ''); ti.innerHTML = t.tp === 'autocarro' ? BU : PL; n.prepend(ti);
-      i.append(n, s);
-      const a = document.createElement('div'); a.className = 'a';
-      const mk = (label, fn, cls) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; if (cls) b.className = cls; b.addEventListener('click', () => fn(b)); a.appendChild(b); };
-      mk('Copiar link', b => copy(urlOf(row.code), b, 'Copiar link'));
-      mk('Editar', () => { fill(t); setEdit(row.code); showLink(row.code, t); window.scrollTo({ top: 0, behavior: 'smooth' }); });
-      mk('Apagar', async b => {
-        if (b.dataset.ok !== '1') { b.dataset.ok = '1'; b.textContent = 'Confirmar?'; setTimeout(() => { b.dataset.ok = ''; b.textContent = 'Apagar'; }, 3000); return; }
-        try { await api('trips?code=eq.' + row.code, { method: 'DELETE', headers: { Prefer: 'return=minimal' } }); if (editing === row.code) { setEdit(null); el('res').hidden = true; } await load(); }
-        catch (e) { msg('serr', e.message); }
-      }, 'del');
-      it.append(i, a); L.appendChild(it);
-    });
-  }
-  async function load() {
-    try { trips = await api('trips?select=code,data,created_at&order=created_at.desc'); render(); }
-    catch (e) { el('list').textContent = ''; const p = document.createElement('p'); p.className = 'err'; p.textContent = 'Não foi possível carregar as viagens.'; el('list').appendChild(p); }
-  }
-  function show() {
-    const cfg = !U || !K || /SEU-PROJETO|SUA-CHAVE/.test(U + K);
-    el('cfg').hidden = !cfg; el('login').hidden = cfg || !!ses; el('app').hidden = cfg || !ses; el('out').hidden = cfg || !ses;
-    if (!cfg && ses) load();
-  }
-
-  ids.forEach(i => el(i).addEventListener('input', () => el('tot').textContent = eur(tot(read()))));
-  el('lf').addEventListener('submit', async e => {
-    e.preventDefault(); msg('lerr');
-    try { await auth('password', { email: el('em').value.trim(), password: el('pw').value }); el('pw').value = ''; show(); }
-    catch (err) { msg('lerr', err.message); }
-  });
-  el('out').addEventListener('click', () => { keep(null); show(); });
-  el('nw').addEventListener('click', () => { setEdit(null); el('res').hidden = true; });
-  el('cp').addEventListener('click', () => copy(el('link').textContent, el('cp'), 'Copiar link'));
-  el('sv').addEventListener('click', async () => {
-    const t = read(); msg('serr');
-    if (!t.o || !t.d || !t.dt) { msg('serr', 'Preencha pelo menos a data, a origem e o destino.'); return; }
-    const code = editing || newCode(); el('sv').disabled = true;
-    try {
-      await api('trips', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=representation' }, body: JSON.stringify({ code, data: t }) });
-      showLink(code, t); setEdit(code); await load();
-    } catch (e) { msg('serr', e.message); }
-    el('sv').disabled = false;
-  });
-  document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => setTp(b.dataset.tp)));
-  el('d').addEventListener('input', () => { clearTimeout(ct); ct = setTimeout(checkCity, 600); });
-  el('phf').addEventListener('change', async e => {
-    const f = e.target.files[0]; e.target.value = ''; if (!f) return;
-    const name = el('d').value.trim(), s = slug(name); if (!s) return;
-    phState('up', name); msg('serr');
-    try {
-      const blob = await shrink(f); await fresh();
-      const r = await fetch(U + '/storage/v1/object/cidades/' + s + '.jpg', { method: 'POST', headers: { apikey: K, Authorization: 'Bearer ' + ses.a, 'Content-Type': 'image/jpeg', 'x-upsert': 'true' }, body: blob });
-      if (!r.ok) throw new Error('upload ' + r.status);
-      const url = U + '/storage/v1/object/public/cidades/' + s + '.jpg?v=' + Date.now();
-      await api('cities', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=representation' }, body: JSON.stringify({ slug: s, name, url }) });
-      city = { slug: s, name, url }; phState('ok', name);
-      if (editing) msg('serr', '');
-    } catch (err) { phState(city ? 'ok' : 'none', name); msg('serr', 'Não foi possível guardar a foto. Tente outra vez.'); }
-  });
-  fill({ bg: '2 × 23 kg\n+ 2 malas de mão pequenas' });
-  show();
+  document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', () => {
+    const o = b.dataset.label || (b.dataset.label = b.textContent);
+    if (copyText(b.dataset.v)) b.textContent = 'Copiado ✓';
+    else { const r = document.createRange(); r.selectNodeContents(b.closest('.p').querySelector('.vv')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Toque sem soltar para copiar'; }
+    clearTimeout(b._t); b._t = setTimeout(() => b.textContent = o, 1800);
+  }));
+})();
 </script>
 </body>
 </html>
