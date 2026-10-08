@@ -58,6 +58,20 @@
   .it .a { display: flex; gap: 6px; flex-wrap: wrap; }
   .it button { font: inherit; font-size: 12px; font-weight: 700; padding: 8px 12px; border-radius: 99px; border: 1px solid #c9d6e6; background: #f4f7fb; color: #0b2a5b; cursor: pointer; }
   .it button.del { color: #b3261e; }
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 5px; margin-bottom: 18px; border-radius: 14px; background: #eef2f8; }
+  .seg button { display: flex; align-items: center; justify-content: center; gap: 8px; height: 46px; border: 0; border-radius: 10px; background: transparent; font: inherit; font-size: 15px; font-weight: 700; color: #7a8ca5; cursor: pointer; transition: background .15s, color .15s; }
+  .seg button svg { width: 18px; height: 18px; fill: currentColor; }
+  .seg button.on { background: #fff; color: #0b2a5b; box-shadow: 0 2px 8px rgba(11,42,91,.12); }
+  body.bus header { background: linear-gradient(135deg, #0c3a35, #127a63 60%, #45c29c); }
+  body.bus h2, body.bus .seg button.on { color: #127a63; }
+  body.bus .gt svg { fill: #127a63; }
+  body.bus .total { background: linear-gradient(90deg, #0c3a35, #127a63); }
+  body.bus button.b, body.bus a.b { border-color: #127a63; color: #127a63; }
+  body.bus .b.wa { color: #fff; border-color: #1c9a6b; }
+  body.bus .b.pri { background: #127a63; border-color: #127a63; }
+  body.bus input:focus, body.bus textarea:focus { border-color: #45c29c; box-shadow: 0 0 0 4px rgba(69,194,156,.2); }
+  .tp { display: inline-flex; vertical-align: -3px; margin-right: 6px; } .tp svg { width: 16px; height: 16px; fill: #1560bd; }
+  .tp.bus svg { fill: #127a63; }
 </style>
 </head>
 <body>
@@ -76,15 +90,16 @@
   <div id="app" hidden style="display:grid;gap:16px">
     <section>
       <h2 id="ft">Nova viagem</h2>
+      <div class="seg" role="radiogroup" aria-label="Tipo de viagem"><button type="button" role="radio" data-tp="aviao" class="on" aria-checked="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>Avião</button><button type="button" role="radio" data-tp="autocarro" aria-checked="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a3 3 0 0 1 3 3v12a2 2 0 0 1-1 1.7V21a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-2H7v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.3A2 2 0 0 1 3 17V5a3 3 0 0 1 3-3zm0 4v5h12V6H6zm1.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>Autocarro</button></div>
       <div class="grp">
         <div class="gt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4.5 4.5 0 1 0 0-9 4.5 4.5 0 0 0 0 9zm0 2c-4.4 0-8 2.2-8 5v2h16v-2c0-2.8-3.6-5-8-5z"/></svg>Cliente</div>
         <label>Nome do cliente (opcional)<input id="cl" autocomplete="off" placeholder="Ex.: Maria Silva"></label>
       </div>
       <div class="grp">
-        <div class="gt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>Voo</div>
+        <div class="gt" id="vt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>Voo</div>
         <div class="r"><label>Data<input id="dt" type="date"></label><label>Hora<input id="hr" type="time"></label></div>
-        <div class="r c"><label>Origem<input id="o" placeholder="Praia"></label><label>Código<input id="co" maxlength="4" placeholder="RAI"></label></div>
-        <div class="r c"><label>Destino<input id="d" placeholder="Lisboa"></label><label>Código<input id="cd" maxlength="4" placeholder="LIS"></label></div>
+        <div class="r c"><label>Origem<input id="o" placeholder="Praia"></label><label>Código (opc.)<input id="co" maxlength="4" placeholder="RAI"></label></div>
+        <div class="r c"><label>Destino<input id="d" placeholder="Lisboa"></label><label>Código (opc.)<input id="cd" maxlength="4" placeholder="LIS"></label></div>
       </div>
       <div class="grp">
         <div class="gt"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 3h6a1 1 0 0 1 1 1v2h2a2 2 0 0 1 2 2v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h2V4a1 1 0 0 1 1-1zm1 3h4V5h-4v1z"/></svg>Bagagem</div>
@@ -134,7 +149,17 @@
   const base = location.href.split(/[?#]/)[0].replace(/criar\.html$/, '') + (location.protocol === 'file:' ? 'index.html' : '');
   const urlOf = c => base + '?v=' + c;
   const msg = (id, m) => { el(id).textContent = m || ''; el(id).hidden = !m; };
-  let ses = null, editing = null, trips = [];
+  let ses = null, editing = null, trips = [], tp = 'aviao';
+  const PL = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/></svg>', BU = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 2h12a3 3 0 0 1 3 3v12a2 2 0 0 1-1 1.7V21a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-2H7v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.3A2 2 0 0 1 3 17V5a3 3 0 0 1 3-3zm0 4v5h12V6H6zm1.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/></svg>';
+  function setTp(x) {
+    tp = x === 'autocarro' ? 'autocarro' : 'aviao'; const bus = tp === 'autocarro';
+    document.body.classList.toggle('bus', bus);
+    document.querySelectorAll('.seg button').forEach(b => { const on = b.dataset.tp === tp; b.classList.toggle('on', on); b.setAttribute('aria-checked', on); });
+    el('vt').innerHTML = (bus ? BU : PL) + (bus ? 'Autocarro' : 'Voo');
+    el('o').placeholder = bus ? 'Lisboa' : 'Praia'; el('d').placeholder = bus ? 'Porto' : 'Lisboa';
+    el('co').placeholder = bus ? '' : 'RAI'; el('cd').placeholder = bus ? '' : 'LIS';
+    document.querySelector('meta[name=theme-color]').content = bus ? '#0c3a35' : '#0b2a5b';
+  }
   try { ses = JSON.parse(localStorage.getItem('tef_ses')); } catch (e) {}
   function keep(s) { ses = s; try { s ? localStorage.setItem('tef_ses', JSON.stringify(s)) : localStorage.removeItem('tef_ses'); } catch (e) {} }
 
@@ -153,12 +178,13 @@
   }
 
   function read() {
-    const t = {};
+    const t = { tp };
     ids.forEach(i => { const x = el(i).value.trim(); t[i] = money.includes(i) ? num(x) : x; });
     t.co = t.co.toUpperCase(); t.cd = t.cd.toUpperCase();
     return t;
   }
   function fill(t) {
+    setTp(t.tp);
     ids.forEach(i => el(i).value = money.includes(i) ? (t[i] ? String(t[i].toFixed(2)).replace('.', ',') : '') : (t[i] || ''));
     el('tot').textContent = eur(tot(read()));
   }
@@ -171,7 +197,7 @@
   function showLink(code, t) {
     const url = urlOf(code);
     el('res').hidden = false; el('link').textContent = url; el('op').href = url;
-    el('wa').href = 'https://wa.me/?text=' + encodeURIComponent('Olá' + (t.cl ? ' ' + t.cl : '') + '! Segue o resumo da sua viagem ' + t.o + ' → ' + t.d + (t.dt ? ' de ' + pt(t.dt) : '') + ':\n' + url);
+    el('wa').href = 'https://wa.me/?text=' + encodeURIComponent('Olá' + (t.cl ? ' ' + t.cl : '') + '! Segue o resumo da sua viagem ' + (t.tp === 'autocarro' ? 'de autocarro ' : '') + t.o + ' → ' + t.d + (t.dt ? ' de ' + pt(t.dt) : '') + ':\n' + url);
   }
   async function copy(text, btn, label) {
     try { await navigator.clipboard.writeText(text); btn.textContent = 'Copiado ✓'; setTimeout(() => btn.textContent = label, 1600); }
@@ -190,6 +216,7 @@
       const i = document.createElement('div'); i.className = 'i';
       const n = document.createElement('div'); n.className = 'n'; n.textContent = (t.cl || 'Sem nome') + ' · ' + (t.o || '') + ' → ' + (t.d || '');
       const s = document.createElement('div'); s.className = 's'; s.textContent = [pt(t.dt), t.hr, eur(tot(t)), row.code].filter(Boolean).join(' · ');
+      const ti = document.createElement('span'); ti.className = 'tp' + (t.tp === 'autocarro' ? ' bus' : ''); ti.innerHTML = t.tp === 'autocarro' ? BU : PL; n.prepend(ti);
       i.append(n, s);
       const a = document.createElement('div'); a.className = 'a';
       const mk = (label, fn, cls) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; if (cls) b.className = cls; b.addEventListener('click', () => fn(b)); a.appendChild(b); };
@@ -232,6 +259,7 @@
     } catch (e) { msg('serr', e.message); }
     el('sv').disabled = false;
   });
+  document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => setTp(b.dataset.tp)));
   fill({ bg: '2 × 23 kg\n+ 2 malas de mão pequenas' });
   show();
 </script>
