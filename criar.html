@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b2a5b">
+<title>Trip Easy Fast · Nova viagem</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background: #eef2f8; color: #12263f; padding-bottom: 40px; }
+  header { background: linear-gradient(135deg, #0b2a5b, #1560bd 60%, #38b6e8); color: #fff; padding: 28px 16px 56px; }
+  header div, main { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 24px; letter-spacing: 1px; } h1 span { color: #ffd166; }
+  header p { margin-top: 6px; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; opacity: .85; }
+  main { padding: 0 16px; margin-top: -36px; display: grid; gap: 16px; }
+  section { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 8px 24px rgba(11,42,91,.10); }
+  h2 { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: #1560bd; margin-bottom: 14px; }
+  .g { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; }
+  label { display: block; font-size: 12px; font-weight: 600; color: #5a6d87; }
+  input, textarea { display: block; width: 100%; margin-top: 5px; padding: 11px 12px; font: inherit; font-size: 16px; color: #0b2a5b; border: 1px solid #c9d6e6; border-radius: 10px; background: #f8fafd; }
+  input:focus, textarea:focus { outline: 2px solid #38b6e8; border-color: #38b6e8; background: #fff; }
+  #co, #cd { text-transform: uppercase; }
+  textarea { resize: vertical; min-height: 64px; }
+  .w2 { grid-column: 1 / -1; }
+  .total { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding: 16px 18px; border-radius: 12px; background: linear-gradient(90deg, #0b2a5b, #1560bd); color: #fff; }
+  .total span { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; }
+  .total b { font-size: 24px; color: #ffd166; font-variant-numeric: tabular-nums; }
+  #link { font-size: 13px; word-break: break-all; color: #33475f; background: #f4f7fb; border: 1px dashed #c9d6e6; border-radius: 10px; padding: 12px; user-select: all; }
+  .btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+  .btns button, .btns a { flex: 1 1 140px; text-align: center; font: inherit; font-size: 14px; font-weight: 700; padding: 13px 14px; border-radius: 99px; border: 1px solid #1560bd; cursor: pointer; text-decoration: none; background: #fff; color: #1560bd; }
+  .btns .pri { background: #1560bd; color: #fff; }
+  .btns .wa { background: #1c9a6b; border-color: #1c9a6b; color: #fff; }
+  .btns :focus-visible { outline: 2px solid #ffd166; outline-offset: 2px; }
+  .hint { font-size: 12px; color: #7a8ca5; margin-top: 10px; line-height: 1.5; }
+</style>
+</head>
+<body>
+<header><div><h1>TRIP EASY <span>FAST</span></h1><p>Criar nova viagem</p></div></header>
+<main>
+  <section>
+    <h2>Viagem</h2>
+    <div class="g">
+      <label class="w2">Nome do cliente (opcional)<input id="cl" autocomplete="off" placeholder="Ex.: Maria Silva"></label>
+      <label>Data<input id="dt" type="date" value="2026-10-14"></label>
+      <label>Hora<input id="hr" type="time" value="17:30"></label>
+      <label>Origem<input id="o" value="Praia"></label>
+      <label>Código origem<input id="co" value="RAI" maxlength="4"></label>
+      <label>Destino<input id="d" value="Lisboa"></label>
+      <label>Código destino<input id="cd" value="LIS" maxlength="4"></label>
+      <label class="w2">Bagagem<textarea id="bg">2 × 23 kg
++ 2 malas de mão pequenas</textarea></label>
+    </div>
+  </section>
+  <section>
+    <h2>Valores (€)</h2>
+    <div class="g">
+      <label>Viagem<input id="v" inputmode="decimal" value="366,96"></label>
+      <label>Taxa de Operação<input id="to" inputmode="decimal" value="39,59"></label>
+      <label>Taxa Check-in<input id="tc" inputmode="decimal" value="22,50"></label>
+      <label>Desconto<input id="ds" inputmode="decimal" value="1,99"></label>
+    </div>
+    <div class="total"><span>Total</span><b id="tot"></b></div>
+    <p class="hint">O total é calculado automaticamente. Taxas ou desconto a zero não aparecem ao cliente.</p>
+  </section>
+  <section>
+    <h2>Link para o cliente</h2>
+    <div id="link"></div>
+    <div class="btns">
+      <button class="pri" id="cp" type="button">Copiar link</button>
+      <a class="wa" id="wa" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+      <a id="op" target="_blank" rel="noopener">Ver página</a>
+    </div>
+    <p class="hint">Os meios de pagamento são fixos e não dependem do link, por isso ninguém os consegue trocar.</p>
+  </section>
+</main>
+<script>
+  const ids = ['cl','dt','hr','o','co','d','cd','bg','v','to','tc','ds'], money = ['v','to','tc','ds'];
+  const el = id => document.getElementById(id);
+  const num = s => Math.abs(parseFloat(String(s).replace(/\s/g,'').replace(',','.'))) || 0;
+  function build() {
+    const t = {};
+    ids.forEach(i => { const x = el(i).value.trim(); t[i] = money.includes(i) ? num(x) : x; });
+    t.co = t.co.toUpperCase(); t.cd = t.cd.toUpperCase();
+    el('tot').textContent = (t.v + t.to + t.tc - t.ds).toFixed(2).replace('.', ',') + ' €';
+    const b = btoa(unescape(encodeURIComponent(JSON.stringify(t)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+    const base = location.href.split(/[?#]/)[0].replace(/criar\.html$/, '');
+    const url = base + (location.protocol === 'file:' ? 'index.html' : '') + '?v=' + b;
+    el('link').textContent = url; el('op').href = url;
+    const d = t.dt.split('-');
+    el('wa').href = 'https://wa.me/?text=' + encodeURIComponent('Olá' + (t.cl ? ' ' + t.cl : '') + '! Segue o resumo da sua viagem ' + t.o + ' → ' + t.d + (d.length === 3 ? ' de ' + d[2] + '/' + d[1] + '/' + d[0] : '') + ':\n' + url);
+  }
+  ids.forEach(i => el(i).addEventListener('input', build)); build();
+  el('cp').addEventListener('click', async () => {
+    try { await navigator.clipboard.writeText(el('link').textContent); el('cp').textContent = 'Copiado ✓'; setTimeout(() => el('cp').textContent = 'Copiar link', 1600); }
+    catch (e) { const r = document.createRange(); r.selectNodeContents(el('link')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  });
+</script>
+</body>
+</html>
