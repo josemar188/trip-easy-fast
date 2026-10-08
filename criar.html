@@ -5,14 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0b2a5b">
-<title>Trip Easy Fast · Nova viagem</title>
+<title>Trip Easy Fast · Painel</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
+  [hidden] { display: none !important; }
   body { font-family: "Helvetica Neue", Helvetica, Arial, sans-serif; background: #eef2f8; color: #12263f; padding-bottom: 40px; }
   header { background: linear-gradient(135deg, #0b2a5b, #1560bd 60%, #38b6e8); color: #fff; padding: 28px 16px 56px; }
-  header div, main { max-width: 720px; margin: 0 auto; }
+  header > div, main { max-width: 720px; margin: 0 auto; }
+  header > div { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; }
   h1 { font-size: 24px; letter-spacing: 1px; } h1 span { color: #ffd166; }
   header p { margin-top: 6px; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; opacity: .85; }
+  #out { background: rgba(255,255,255,.15); color: #fff; border: 1px solid rgba(255,255,255,.4); border-radius: 99px; padding: 8px 14px; font: inherit; font-size: 13px; cursor: pointer; }
   main { padding: 0 16px; margin-top: -36px; display: grid; gap: 16px; }
   section { background: #fff; border-radius: 16px; padding: 20px; box-shadow: 0 8px 24px rgba(11,42,91,.10); }
   h2 { font-size: 11px; letter-spacing: 2.5px; text-transform: uppercase; color: #1560bd; margin-bottom: 14px; }
@@ -26,75 +29,194 @@
   .total { display: flex; justify-content: space-between; align-items: center; margin-top: 16px; padding: 16px 18px; border-radius: 12px; background: linear-gradient(90deg, #0b2a5b, #1560bd); color: #fff; }
   .total span { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; }
   .total b { font-size: 24px; color: #ffd166; font-variant-numeric: tabular-nums; }
-  #link { font-size: 13px; word-break: break-all; color: #33475f; background: #f4f7fb; border: 1px dashed #c9d6e6; border-radius: 10px; padding: 12px; user-select: all; }
+  #link { font-size: 15px; font-weight: 600; word-break: break-all; color: #0b2a5b; background: #f4f7fb; border: 1px dashed #c9d6e6; border-radius: 10px; padding: 14px; user-select: all; }
   .btns { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
-  .btns button, .btns a { flex: 1 1 140px; text-align: center; font: inherit; font-size: 14px; font-weight: 700; padding: 13px 14px; border-radius: 99px; border: 1px solid #1560bd; cursor: pointer; text-decoration: none; background: #fff; color: #1560bd; }
-  .btns .pri { background: #1560bd; color: #fff; }
-  .btns .wa { background: #1c9a6b; border-color: #1c9a6b; color: #fff; }
-  .btns :focus-visible { outline: 2px solid #ffd166; outline-offset: 2px; }
+  button.b, a.b { flex: 1 1 140px; text-align: center; font: inherit; font-size: 14px; font-weight: 700; padding: 13px 14px; border-radius: 99px; border: 1px solid #1560bd; cursor: pointer; text-decoration: none; background: #fff; color: #1560bd; }
+  .b.pri { background: #1560bd; color: #fff; }
+  .b.wa { background: #1c9a6b; border-color: #1c9a6b; color: #fff; }
+  .b:disabled { opacity: .55; cursor: default; }
+  :focus-visible { outline: 2px solid #ffd166; outline-offset: 2px; }
   .hint { font-size: 12px; color: #7a8ca5; margin-top: 10px; line-height: 1.5; }
+  .err { font-size: 13px; color: #b3261e; margin-top: 10px; line-height: 1.5; }
+  .it { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; padding: 14px 0; border-top: 1px solid #e8eef5; }
+  .it:first-child { border-top: 0; padding-top: 0; }
+  .it .i { flex: 1 1 200px; min-width: 0; }
+  .it .n { font-weight: 700; color: #0b2a5b; }
+  .it .s { font-size: 13px; color: #5a6d87; margin-top: 3px; }
+  .it .a { display: flex; gap: 6px; flex-wrap: wrap; }
+  .it button { font: inherit; font-size: 12px; font-weight: 700; padding: 8px 12px; border-radius: 99px; border: 1px solid #c9d6e6; background: #f4f7fb; color: #0b2a5b; cursor: pointer; }
+  .it button.del { color: #b3261e; }
 </style>
 </head>
 <body>
-<header><div><h1>TRIP EASY <span>FAST</span></h1><p>Criar nova viagem</p></div></header>
+<header><div><div><h1>TRIP EASY <span>FAST</span></h1><p id="sub">Painel de viagens</p></div><button id="out" type="button" hidden>Sair</button></div></header>
 <main>
-  <section>
-    <h2>Viagem</h2>
-    <div class="g">
-      <label class="w2">Nome do cliente (opcional)<input id="cl" autocomplete="off" placeholder="Ex.: Maria Silva"></label>
-      <label>Data<input id="dt" type="date" value="2026-10-14"></label>
-      <label>Hora<input id="hr" type="time" value="17:30"></label>
-      <label>Origem<input id="o" value="Praia"></label>
-      <label>Código origem<input id="co" value="RAI" maxlength="4"></label>
-      <label>Destino<input id="d" value="Lisboa"></label>
-      <label>Código destino<input id="cd" value="LIS" maxlength="4"></label>
-      <label class="w2">Bagagem<textarea id="bg">2 × 23 kg
-+ 2 malas de mão pequenas</textarea></label>
-    </div>
+  <section id="login" hidden>
+    <h2>Entrar</h2>
+    <form id="lf" class="g">
+      <label class="w2">Email<input id="em" type="email" autocomplete="username" required></label>
+      <label class="w2">Palavra-passe<input id="pw" type="password" autocomplete="current-password" required></label>
+      <div class="btns w2"><button class="b pri" type="submit">Entrar</button></div>
+    </form>
+    <p class="err" id="lerr" hidden></p>
   </section>
-  <section>
-    <h2>Valores (€)</h2>
-    <div class="g">
-      <label>Viagem<input id="v" inputmode="decimal" value="366,96"></label>
-      <label>Taxa de Operação<input id="to" inputmode="decimal" value="39,59"></label>
-      <label>Taxa Check-in<input id="tc" inputmode="decimal" value="22,50"></label>
-      <label>Desconto<input id="ds" inputmode="decimal" value="1,99"></label>
-    </div>
-    <div class="total"><span>Total</span><b id="tot"></b></div>
-    <p class="hint">O total é calculado automaticamente. Taxas ou desconto a zero não aparecem ao cliente.</p>
-  </section>
-  <section>
-    <h2>Link para o cliente</h2>
-    <div id="link"></div>
-    <div class="btns">
-      <button class="pri" id="cp" type="button">Copiar link</button>
-      <a class="wa" id="wa" target="_blank" rel="noopener">Enviar por WhatsApp</a>
-      <a id="op" target="_blank" rel="noopener">Ver página</a>
-    </div>
-    <p class="hint">Os meios de pagamento são fixos e não dependem do link, por isso ninguém os consegue trocar.</p>
-  </section>
+
+  <div id="app" hidden style="display:grid;gap:16px">
+    <section>
+      <h2 id="ft">Nova viagem</h2>
+      <div class="g">
+        <label class="w2">Nome do cliente (opcional)<input id="cl" autocomplete="off" placeholder="Ex.: Maria Silva"></label>
+        <label>Data<input id="dt" type="date"></label>
+        <label>Hora<input id="hr" type="time"></label>
+        <label>Origem<input id="o"></label>
+        <label>Código origem<input id="co" maxlength="4"></label>
+        <label>Destino<input id="d"></label>
+        <label>Código destino<input id="cd" maxlength="4"></label>
+        <label class="w2">Bagagem<textarea id="bg"></textarea></label>
+        <label>Viagem (€)<input id="v" inputmode="decimal"></label>
+        <label>Taxa de Operação (€)<input id="to" inputmode="decimal"></label>
+        <label>Taxa Check-in (€)<input id="tc" inputmode="decimal"></label>
+        <label>Desconto (€)<input id="ds" inputmode="decimal"></label>
+      </div>
+      <div class="total"><span>Total</span><b id="tot"></b></div>
+      <div class="btns">
+        <button class="b pri" id="sv" type="button">Criar link</button>
+        <button class="b" id="nw" type="button" hidden>Cancelar edição</button>
+      </div>
+      <p class="hint">O total é calculado automaticamente. Taxas ou desconto a zero não aparecem ao cliente.</p>
+      <p class="err" id="serr" hidden></p>
+    </section>
+
+    <section id="res" hidden>
+      <h2>Link para o cliente</h2>
+      <div id="link"></div>
+      <div class="btns">
+        <button class="b pri" id="cp" type="button">Copiar link</button>
+        <a class="b wa" id="wa" target="_blank" rel="noopener">Enviar por WhatsApp</a>
+        <a class="b" id="op" target="_blank" rel="noopener">Ver página</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Viagens criadas</h2>
+      <div id="list"><p class="hint">A carregar…</p></div>
+    </section>
+  </div>
+
+  <section id="cfg" hidden><h2>Configuração em falta</h2><p class="hint" style="font-size:14px">Abra o ficheiro <b>config.js</b> e preencha o endereço do projeto Supabase e a chave pública.</p></section>
 </main>
+<script src="config.js"></script>
 <script>
+  const U = window.TEF_URL || '', K = window.TEF_KEY || '';
   const ids = ['cl','dt','hr','o','co','d','cd','bg','v','to','tc','ds'], money = ['v','to','tc','ds'];
   const el = id => document.getElementById(id);
   const num = s => Math.abs(parseFloat(String(s).replace(/\s/g,'').replace(',','.'))) || 0;
-  function build() {
+  const eur = n => (Number(n) || 0).toFixed(2).replace('.', ',') + ' €';
+  const tot = t => (t.v || 0) + (t.to || 0) + (t.tc || 0) - (t.ds || 0);
+  const pt = s => { const d = String(s || '').split('-'); return d.length === 3 ? d[2] + '/' + d[1] + '/' + d[0] : (s || ''); };
+  const base = location.href.split(/[?#]/)[0].replace(/criar\.html$/, '') + (location.protocol === 'file:' ? 'index.html' : '');
+  const urlOf = c => base + '?v=' + c;
+  const msg = (id, m) => { el(id).textContent = m || ''; el(id).hidden = !m; };
+  let ses = null, editing = null, trips = [];
+  try { ses = JSON.parse(localStorage.getItem('tef_ses')); } catch (e) {}
+  function keep(s) { ses = s; try { s ? localStorage.setItem('tef_ses', JSON.stringify(s)) : localStorage.removeItem('tef_ses'); } catch (e) {} }
+
+  async function auth(grant, body) {
+    const r = await fetch(U + '/auth/v1/token?grant_type=' + grant, { method: 'POST', headers: { apikey: K, 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+    const j = await r.json().catch(() => ({}));
+    if (!r.ok) throw new Error(r.status === 400 ? 'Email ou palavra-passe incorretos.' : (j.msg || j.error_description || 'Não foi possível entrar.'));
+    keep({ a: j.access_token, r: j.refresh_token, e: Date.now() + j.expires_in * 1000 - 60000 });
+  }
+  async function api(path, opt = {}) {
+    if (ses && Date.now() > ses.e) { try { await auth('refresh_token', { refresh_token: ses.r }); } catch (e) { keep(null); show(); throw new Error('A sessão expirou. Entre novamente.'); } }
+    const r = await fetch(U + '/rest/v1/' + path, { ...opt, headers: { apikey: K, Authorization: 'Bearer ' + ses.a, 'Content-Type': 'application/json', ...(opt.headers || {}) } });
+    if (r.status === 401) { keep(null); show(); throw new Error('A sessão expirou. Entre novamente.'); }
+    if (!r.ok) throw new Error('Não foi possível guardar (' + r.status + '). Tente outra vez.');
+    return r.status === 204 ? null : r.json();
+  }
+
+  function read() {
     const t = {};
     ids.forEach(i => { const x = el(i).value.trim(); t[i] = money.includes(i) ? num(x) : x; });
     t.co = t.co.toUpperCase(); t.cd = t.cd.toUpperCase();
-    el('tot').textContent = (t.v + t.to + t.tc - t.ds).toFixed(2).replace('.', ',') + ' €';
-    const b = btoa(unescape(encodeURIComponent(JSON.stringify(t)))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
-    const base = location.href.split(/[?#]/)[0].replace(/criar\.html$/, '');
-    const url = base + (location.protocol === 'file:' ? 'index.html' : '') + '?v=' + b;
-    el('link').textContent = url; el('op').href = url;
-    const d = t.dt.split('-');
-    el('wa').href = 'https://wa.me/?text=' + encodeURIComponent('Olá' + (t.cl ? ' ' + t.cl : '') + '! Segue o resumo da sua viagem ' + t.o + ' → ' + t.d + (d.length === 3 ? ' de ' + d[2] + '/' + d[1] + '/' + d[0] : '') + ':\n' + url);
+    return t;
   }
-  ids.forEach(i => el(i).addEventListener('input', build)); build();
-  el('cp').addEventListener('click', async () => {
-    try { await navigator.clipboard.writeText(el('link').textContent); el('cp').textContent = 'Copiado ✓'; setTimeout(() => el('cp').textContent = 'Copiar link', 1600); }
-    catch (e) { const r = document.createRange(); r.selectNodeContents(el('link')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); }
+  function fill(t) {
+    ids.forEach(i => el(i).value = money.includes(i) ? (t[i] ? String(t[i].toFixed(2)).replace('.', ',') : '') : (t[i] || ''));
+    el('tot').textContent = eur(tot(read()));
+  }
+  function setEdit(code) {
+    editing = code;
+    el('ft').textContent = code ? 'Editar viagem ' + code : 'Nova viagem';
+    el('sv').textContent = code ? 'Guardar alterações' : 'Criar link';
+    el('nw').hidden = !code;
+  }
+  function showLink(code, t) {
+    const url = urlOf(code);
+    el('res').hidden = false; el('link').textContent = url; el('op').href = url;
+    el('wa').href = 'https://wa.me/?text=' + encodeURIComponent('Olá' + (t.cl ? ' ' + t.cl : '') + '! Segue o resumo da sua viagem ' + t.o + ' → ' + t.d + (t.dt ? ' de ' + pt(t.dt) : '') + ':\n' + url);
+  }
+  async function copy(text, btn, label) {
+    try { await navigator.clipboard.writeText(text); btn.textContent = 'Copiado ✓'; setTimeout(() => btn.textContent = label, 1600); }
+    catch (e) { btn.textContent = 'Selecione e copie o link'; setTimeout(() => btn.textContent = label, 2500); }
+  }
+  function newCode() {
+    const A = 'ABCDEFGHJKMNPQRSTUVWXYZ23456789', r = crypto.getRandomValues(new Uint8Array(6));
+    return Array.from(r, x => A[x % A.length]).join('');
+  }
+
+  function render() {
+    const L = el('list'); L.textContent = '';
+    if (!trips.length) { const p = document.createElement('p'); p.className = 'hint'; p.textContent = 'Ainda não criou nenhuma viagem.'; L.appendChild(p); return; }
+    trips.forEach(row => {
+      const t = row.data, it = document.createElement('div'); it.className = 'it';
+      const i = document.createElement('div'); i.className = 'i';
+      const n = document.createElement('div'); n.className = 'n'; n.textContent = (t.cl || 'Sem nome') + ' · ' + (t.o || '') + ' → ' + (t.d || '');
+      const s = document.createElement('div'); s.className = 's'; s.textContent = [pt(t.dt), t.hr, eur(tot(t)), row.code].filter(Boolean).join(' · ');
+      i.append(n, s);
+      const a = document.createElement('div'); a.className = 'a';
+      const mk = (label, fn, cls) => { const b = document.createElement('button'); b.type = 'button'; b.textContent = label; if (cls) b.className = cls; b.addEventListener('click', () => fn(b)); a.appendChild(b); };
+      mk('Copiar link', b => copy(urlOf(row.code), b, 'Copiar link'));
+      mk('Editar', () => { fill(t); setEdit(row.code); showLink(row.code, t); window.scrollTo({ top: 0, behavior: 'smooth' }); });
+      mk('Apagar', async b => {
+        if (b.dataset.ok !== '1') { b.dataset.ok = '1'; b.textContent = 'Confirmar?'; setTimeout(() => { b.dataset.ok = ''; b.textContent = 'Apagar'; }, 3000); return; }
+        try { await api('trips?code=eq.' + row.code, { method: 'DELETE', headers: { Prefer: 'return=minimal' } }); if (editing === row.code) { setEdit(null); el('res').hidden = true; } await load(); }
+        catch (e) { msg('serr', e.message); }
+      }, 'del');
+      it.append(i, a); L.appendChild(it);
+    });
+  }
+  async function load() {
+    try { trips = await api('trips?select=code,data,created_at&order=created_at.desc'); render(); }
+    catch (e) { el('list').textContent = ''; const p = document.createElement('p'); p.className = 'err'; p.textContent = 'Não foi possível carregar as viagens.'; el('list').appendChild(p); }
+  }
+  function show() {
+    const cfg = !U || !K || /SEU-PROJETO|SUA-CHAVE/.test(U + K);
+    el('cfg').hidden = !cfg; el('login').hidden = cfg || !!ses; el('app').hidden = cfg || !ses; el('out').hidden = cfg || !ses;
+    if (!cfg && ses) load();
+  }
+
+  ids.forEach(i => el(i).addEventListener('input', () => el('tot').textContent = eur(tot(read()))));
+  el('lf').addEventListener('submit', async e => {
+    e.preventDefault(); msg('lerr');
+    try { await auth('password', { email: el('em').value.trim(), password: el('pw').value }); el('pw').value = ''; show(); }
+    catch (err) { msg('lerr', err.message); }
   });
+  el('out').addEventListener('click', () => { keep(null); show(); });
+  el('nw').addEventListener('click', () => { setEdit(null); el('res').hidden = true; });
+  el('cp').addEventListener('click', () => copy(el('link').textContent, el('cp'), 'Copiar link'));
+  el('sv').addEventListener('click', async () => {
+    const t = read(); msg('serr');
+    if (!t.o || !t.d || !t.dt) { msg('serr', 'Preencha pelo menos a data, a origem e o destino.'); return; }
+    const code = editing || newCode(); el('sv').disabled = true;
+    try {
+      await api('trips', { method: 'POST', headers: { Prefer: 'resolution=merge-duplicates,return=representation' }, body: JSON.stringify({ code, data: t }) });
+      showLink(code, t); setEdit(code); await load();
+    } catch (e) { msg('serr', e.message); }
+    el('sv').disabled = false;
+  });
+  fill({ bg: '2 × 23 kg\n+ 2 malas de mão pequenas' });
+  show();
 </script>
 </body>
 </html>
