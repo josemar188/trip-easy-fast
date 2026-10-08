@@ -90,7 +90,7 @@
   .p { display: grid; grid-template-columns: auto 1fr; gap: 4px 14px; align-items: center; padding: 18px; }
   .p .t { font-weight: 700; font-size: 15px; }
   .p .d { grid-column: 2; font-size: 12px; color: var(--muted); }
-  .p .vv { grid-column: 1 / -1; margin-top: 12px; font-family: var(--mono); font-size: 15px; font-weight: 500; letter-spacing: .3px; color: var(--text); background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; overflow-wrap: break-word; }
+  .p .vv { grid-column: 1 / -1; margin-top: 12px; font-family: var(--mono); font-size: 15px; font-weight: 500; letter-spacing: .3px; color: var(--text); background: var(--soft); border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; overflow-wrap: break-word; -webkit-user-select: all; user-select: all; }
   .p .vv a { color: inherit; text-decoration: none; }
   .p .act { grid-column: 1 / -1; margin-top: 10px; }
   .btn { display: block; width: 100%; padding: 14px; border-radius: 99px; font: inherit; font-size: 14px; font-weight: 700; letter-spacing: .3px; text-align: center; text-decoration: none; cursor: pointer; transition: transform .12s, background .15s; }
@@ -294,11 +294,28 @@
   if (bus) $('carrier').textContent = 'transportadora';
   if (bus) $('foot').textContent = 'by Josemar Lima · Boa viagem de autocarro';
   document.title = 'Trip Easy Fast · ' + (t.o || '') + ' → ' + (t.d || '');
-  document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', async () => {
-    const o = b.textContent;
-    try { await navigator.clipboard.writeText(b.dataset.v); b.textContent = 'Copiado ✓'; }
-    catch (e) { const r = document.createRange(); r.selectNodeContents(b.closest('.p').querySelector('.vv')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Selecionado, copie com o menu'; }
-    setTimeout(() => b.textContent = o, 1800);
+  function copyText(text) {
+    // iPhone (Safari, Brave, Chrome): o método antigo, feito logo no toque, é o mais fiável
+    let ok = false;
+    try {
+      const ta = document.createElement('textarea');
+      ta.value = text; ta.setAttribute('readonly', ''); ta.contentEditable = 'true';
+      ta.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0;font-size:16px;';
+      document.body.appendChild(ta);
+      const r = document.createRange(); r.selectNodeContents(ta);
+      const s = getSelection(); s.removeAllRanges(); s.addRange(r);
+      ta.setSelectionRange(0, text.length);
+      ok = document.execCommand('copy');
+      s.removeAllRanges(); ta.remove();
+    } catch (e) {}
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(text).catch(() => {});
+    return ok || !!(navigator.clipboard && navigator.clipboard.writeText);
+  }
+  document.querySelectorAll('.copy').forEach(b => b.addEventListener('click', () => {
+    const o = b.dataset.label || (b.dataset.label = b.textContent);
+    if (copyText(b.dataset.v)) b.textContent = 'Copiado ✓';
+    else { const r = document.createRange(); r.selectNodeContents(b.closest('.p').querySelector('.vv')); const s = getSelection(); s.removeAllRanges(); s.addRange(r); b.textContent = 'Toque sem soltar para copiar'; }
+    clearTimeout(b._t); b._t = setTimeout(() => b.textContent = o, 1800);
   }));
 })();
 </script>
