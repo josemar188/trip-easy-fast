@@ -24,6 +24,7 @@
     --body: "Manrope", "Helvetica Neue", Arial, sans-serif;
     --mono: "DM Mono", ui-monospace, Menlo, monospace;
   }
+  .svc { --ink: #0e1114; --deep: #232930; --glow: #4b5866; --bg: #f2f3f5; --soft: #f6f7f8; }
   .doc { --ink: #1a0d20; --deep: #3d1c46; --glow: #7a3f83; --bg: #f5f3f6; --soft: #f8f5f9; }
   .bus { --ink: #0a1f1b; --deep: #133f36; --glow: #1f6b58; --bg: #f2f5f3; --soft: #f4f7f5; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -137,6 +138,40 @@
   .fr .fn { font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .fr .fs { font-size: 12px; color: var(--muted); }
   .fr .btn { width: auto; flex: none; padding: 10px 18px; font-size: 13px; }
+  .steps { padding: 8px 22px; }
+  .step { position: relative; display: grid; grid-template-columns: 28px 1fr; gap: 14px; padding: 14px 0; }
+  .step::before { content: ""; position: absolute; left: 13px; top: 42px; bottom: -14px; width: 2px; background: var(--line); }
+  .step:last-child::before { display: none; }
+  .step.done::before { background: var(--gold); }
+  .step .mk { width: 28px; height: 28px; border-radius: 50%; display: grid; place-items: center; border: 2px solid var(--line); background: var(--card); z-index: 1; }
+  .step.done .mk { background: var(--gold); border-color: var(--gold); }
+  .step.done .mk svg { width: 16px; height: 16px; fill: #fff; }
+  .step.now .mk { border-color: var(--gold); box-shadow: 0 0 0 5px rgba(201,164,92,.18); }
+  .step.now .mk::after { content: ""; width: 10px; height: 10px; border-radius: 50%; background: var(--gold); animation: beat 1.6s ease-in-out infinite; }
+  @keyframes beat { 50% { transform: scale(.6); opacity: .6; } }
+  .step .st { font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .step.todo .st { color: var(--muted); font-weight: 600; }
+  .step .sd { margin-top: 2px; font-size: 13.5px; color: var(--muted); }
+  .step .badge { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--gold-ink); background: #f8f0dd; border: 1px solid #ecdcb4; padding: 3px 8px; border-radius: 99px; }
+  .scope { padding: 22px 24px; }
+  .scope p { white-space: pre-line; line-height: 1.6; }
+  .scope p:empty { display: none; }
+  .scope dl { display: grid; grid-template-columns: auto 1fr; gap: 10px 18px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .scope p:empty + dl { margin-top: 0; padding-top: 0; border-top: 0; }
+  .scope dl:empty { display: none; }
+  .scope dt { font-size: 10.5px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); padding-top: 3px; }
+  .scope dd { font-weight: 600; white-space: pre-line; }
+  @media (max-width: 520px) { .scope dl { grid-template-columns: 1fr; gap: 2px; } .scope dd { margin-bottom: 10px; } .scope dd:last-child { margin-bottom: 0; } }
+  .sh { flex-wrap: wrap; row-gap: 2px; } .sh h2 { white-space: nowrap; }
+  .svc .city .code.long { font-size: clamp(20px, 5.6vw, 30px); }
+  .row.sub { border-top: 1px dashed var(--line); }
+  .row.sub span, .row.sub b { color: var(--text); font-weight: 700; }
+  .maplink { display: inline-flex; align-items: center; gap: 6px; margin-top: 8px; font-size: 13px; font-weight: 700; color: var(--gold-ink); text-decoration: none; }
+  .maplink svg { width: 14px; height: 14px; fill: currentColor; }
+  .rdot.tick { width: 6px; height: 6px; background: rgba(255,255,255,.3); transition: background .3s; }
+  .rdot.tick.on { background: var(--gold); }
+  .rico.live { animation: live 1.8s ease-in-out infinite; }
+  @keyframes live { 50% { filter: drop-shadow(0 0 10px rgba(232,211,164,.8)); } }
   footer { padding: 36px 0 calc(env(safe-area-inset-bottom, 0px) + 36px); text-align: center; }
   footer b { font-family: var(--display); font-style: italic; font-weight: 500; font-size: 17px; }
   footer p { margin-top: 4px; font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); }
@@ -207,6 +242,16 @@
       </div>
     </div>
 
+    <section id="svc" hidden>
+      <div class="sh"><h2>Estado do <em>serviço</em></h2><span id="sup"></span></div>
+      <div class="card steps" id="steps"></div>
+    </section>
+
+    <section id="scope" hidden>
+      <div class="sh"><h2>O que <em>inclui</em></h2><span>Detalhe técnico</span></div>
+      <div class="card scope"><p id="sd"></p><dl id="sdl"></dl></div>
+    </section>
+
     <section id="files" hidden>
       <div class="sh"><h2>Os seus <em>documentos</em></h2><span id="fcount"></span></div>
       <div class="card flist" id="flist"></div>
@@ -219,6 +264,8 @@
         <div class="row" id="r2"><span>Taxa de operação</span><b id="v2"></b></div>
         <div class="row" id="r3"><span>Taxa de check-in</span><b id="v3"></b></div>
         <div class="row d" id="r4"><span>Desconto</span><b id="v4"></b></div>
+        <div class="row sub" id="rSub" hidden><span>Subtotal sem IVA</span><b id="vSub"></b></div>
+        <div class="row" id="rIva" hidden><span id="lIva">IVA</span><b id="vIva"></b></div>
         <div class="total"><span>Total a pagar</span><b id="total"></b></div>
       </div>
       <div class="note" role="note" id="pnote">
@@ -260,11 +307,12 @@
   const PLANE = '<path d="M21 16v-2l-8-5V3.5a1.5 1.5 0 0 0-3 0V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5z"/>';
   const BUS = '<path d="M6 2h12a3 3 0 0 1 3 3v12a2 2 0 0 1-1 1.7V21a1 1 0 0 1-1 1h-1a1 1 0 0 1-1-1v-2H7v2a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1v-2.3A2 2 0 0 1 3 17V5a3 3 0 0 1 3-3zm0 4v5h12V6H6zm1.5 8a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3zm9 0a1.5 1.5 0 1 0 0 3 1.5 1.5 0 0 0 0-3z"/>';
   const DOCI = '<path d="M6 2h8l6 6v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V9h5.5L13 3.5zM8 13v2h8v-2H8zm0 4v2h5v-2H8z"/>';
+  const WRENCH = '<path d="M22.7 19l-9.1-9.1c.9-2.3.4-5-1.5-6.9-2-2-5-2.4-7.4-1.3L9 6 6 9 1.6 4.7C.4 7.1.9 10.1 2.9 12.1c1.9 1.9 4.6 2.4 6.9 1.5l9.1 9.1c.4.4 1 .4 1.4 0l2.3-2.3c.5-.4.5-1.1.1-1.4z"/>';
   const CHECK = '<path d="M12 2a10 10 0 1 1 0 20 10 10 0 0 1 0-20zm-1.3 13.6 6-6-1.4-1.4-4.6 4.6-2.3-2.3-1.4 1.4 3.7 3.7z"/>';
   // Animação da rota: o ícone sai da origem e chega ao destino. Tipos novos usam o arco e o ícone genérico.
-  function animateRoute(kind) {
+  function animateRoute(kind, end = 1, ticks = []) {
     const svg = $('path'), box = document.querySelector('.path'), gold = '#c9a45c';
-    const flat = kind === 'bus';
+    const flat = kind === 'bus' || kind === 'svc';
     const P = flat ? [[4, 44], [100, 44], [196, 44]] : [[4, 54], [100, -6], [196, 54]];
     const d = flat ? 'M4 44 L196 44' : 'M4 54 Q100 -6 196 54', dash = flat ? '6 6' : '2 6';
     svg.innerHTML = '<defs><clipPath id="trail"><rect id="trailr" x="0" y="-40" width="0" height="140"/></clipPath></defs>'
@@ -272,9 +320,9 @@
       + '<path d="' + d + '" clip-path="url(#trail)" fill="none" stroke="' + gold + '" stroke-width="1.8" stroke-dasharray="' + dash + '" stroke-linecap="round" vector-effect="non-scaling-stroke"/>';
     box.style.position = 'relative';
     const dot = (cls) => { const e = document.createElement('i'); e.className = 'rdot ' + cls; box.appendChild(e); return e; };
-    const d0 = dot('from'), d1 = dot('to');
+    const d0 = dot('from'), d1 = dot('to'), tk = ticks.map(f => { const e = dot('tick'); e._f = f; return e; });
     const ic = document.createElement('div'); ic.className = 'rico ' + kind;
-    const icon = kind === 'bus' ? BUS : kind === 'doc' ? DOCI : PLANE;
+    const icon = kind === 'bus' ? BUS : kind === 'doc' ? DOCI : kind === 'svc' ? WRENCH : PLANE;
     ic.innerHTML = '<svg viewBox="0 0 24 24">' + icon + '</svg>'; box.appendChild(ic);
     const pt = t => { const u = 1 - t; return [u*u*P[0][0] + 2*u*t*P[1][0] + t*t*P[2][0], u*u*P[0][1] + 2*u*t*P[1][1] + t*t*P[2][1]]; };
     const tan = t => [2*(1-t)*(P[1][0]-P[0][0]) + 2*t*(P[2][0]-P[1][0]), 2*(1-t)*(P[1][1]-P[0][1]) + 2*t*(P[2][1]-P[1][1])];
@@ -286,25 +334,28 @@
       if (kind === 'plane') rot = Math.atan2(dy * sy, dx * sx) * 180 / Math.PI + 90;
       else if (kind === 'bus') lift = 12 + Math.abs(Math.sin(t * 40)) * 1.5;
       else if (kind === 'doc') { rot = Math.sin(t * Math.PI * 4) * 8; lift = 4; }
+      else if (kind === 'svc') { rot = Math.sin(t * Math.PI * 6) * 12; lift = 14; }
       else rot = Math.atan2(dy * sy, dx * sx) * 180 / Math.PI;
       const ix = Math.min(Math.max(x * sx, 13), W - 13);
       ic.style.transform = 'translate(' + (ix - 13) + 'px,' + (y * sy - 13 - lift) + 'px) rotate(' + rot + 'deg)';
       document.getElementById('trailr').setAttribute('width', x);
       d0.style.transform = 'translate(' + (P[0][0] * sx - 4) + 'px,' + (P[0][1] * sy - 4) + 'px)';
       d1.style.transform = 'translate(' + (P[2][0] * sx - 4) + 'px,' + (P[2][1] * sy - 4) + 'px)';
+      tk.forEach(e => { const [tx, ty] = pt(e._f); e.style.transform = 'translate(' + (tx * sx - 3) + 'px,' + (ty * sy - 3) + 'px)'; e.classList.toggle('on', e._f <= t + .001); });
     }
     function arrive() {
+      if (end < 1) { ic.classList.add('live'); return; }
       box.classList.add('arrived'); document.querySelector('.city.r').classList.add('arrived');
-      if (kind === 'doc') { ic.innerHTML = '<svg viewBox="0 0 24 24">' + CHECK + '</svg>'; ic.classList.add('done'); }
+      if (kind === 'doc' || kind === 'svc') { ic.innerHTML = '<svg viewBox="0 0 24 24">' + CHECK + '</svg>'; ic.classList.add('done'); }
     }
     place(0);
     addEventListener('resize', () => place(cur));
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { place(1); arrive(); return; }
-    const dur = kind === 'bus' ? 2600 : 2300, ease = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { place(end); arrive(); return; }
+    const dur = (kind === 'bus' ? 2600 : 2300) * Math.max(.45, end), ease = t => t < .5 ? 4*t*t*t : 1 - Math.pow(-2*t + 2, 3) / 2;
     setTimeout(() => {
       const t0 = performance.now();
       (function step(now) {
-        const k = Math.min(1, (now - t0) / dur); place(ease(k));
+        const k = Math.min(1, (now - t0) / dur); place(ease(k) * end);
         if (k < 1) requestAnimationFrame(step); else arrive();
       })(t0);
     }, 450);
@@ -333,6 +384,50 @@
     document.title = 'Trip Easy Fast'; return;
   }
   const isDoc = t.tp === 'documentos';
+  const isSvc = t.tp === 'servico';
+  const STEPS = [['Pedido recebido', 'Recebemos o seu pedido e analisámos o que precisa.'], ['Proposta enviada', 'A proposta está pronta para a sua aprovação.'], ['Agendado', 'Data e hora confirmadas.'], ['Em execução', 'O serviço está a ser realizado.'], ['Concluído', 'Serviço concluído e verificado.']];
+  const st = Math.min(Math.max(parseInt(t.st, 10) || 0, 0), STEPS.length - 1);
+  const fmtD = s => { const p = String(s || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : ''; };
+  if (isSvc) {
+    document.body.classList.add('svc'); document.querySelector('meta[name=theme-color]').content = '#0e1114';
+    const f0 = String(t.cl || '').trim().split(/\s+/)[0].replace(/[<>&]/g, '');
+    $('mode').innerHTML = '<svg viewBox="0 0 24 24">' + WRENCH + '</svg>Serviço';
+    $('eyebrow').textContent = (t.cl ? 'Serviço · ' + t.cl : 'Serviço') + ' · ' + STEPS[st][0];
+    const lead = st <= 1 ? 'aqui está a <em>proposta</em> do seu serviço' : st === 2 ? 'o seu serviço está <em>agendado</em>' : st === 3 ? 'o seu serviço está <em>em curso</em>' : 'o seu serviço está <em>concluído</em>';
+    $('hello').innerHTML = f0 ? 'Olá ' + f0 + ', ' + lead : lead.charAt(0).toUpperCase() + lead.slice(1);
+    $('dtitle').hidden = false; $('dtitle').querySelector('.name').textContent = 'Serviço'; $('dtt').textContent = t.sn || 'Serviço';
+    $('co').textContent = 'Pedido'; $('co').classList.add('long'); $('on').textContent = 'Início';
+    $('cd').textContent = 'Concluído'; $('cd').classList.add('long'); $('dn').textContent = 'Entrega';
+    $('dt').previousElementSibling.textContent = 'Data marcada'; $('dt').textContent = fmtD(t.dt) || 'A agendar';
+    $('hr').previousElementSibling.textContent = 'Hora'; $('hr').textContent = (t.hr || '—') + (t.du ? ' · ' + t.du : '');
+    $('ref').textContent = q && q.length <= 12 ? q.toUpperCase() : '—';
+    if (t.lc) {
+      document.querySelector('.stub .lbl').textContent = 'Local'; $('bg').textContent = t.lc;
+      document.querySelector('.stub .ic').innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 5.2-7 13-7 13S5 14.2 5 9a7 7 0 0 1 7-7zm0 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>';
+      const a = document.createElement('a'); a.className = 'maplink'; a.target = '_blank'; a.rel = 'noopener';
+      a.href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(t.lc);
+      a.innerHTML = '<svg viewBox="0 0 24 24"><path d="M12 2a7 7 0 0 1 7 7c0 5.2-7 13-7 13S5 14.2 5 9a7 7 0 0 1 7-7zm0 4.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5z"/></svg>Abrir no mapa'; $('bg').parentElement.appendChild(a);
+    } else { document.querySelector('.stub').hidden = true; document.querySelector('.perf').hidden = true; }
+    $('svc').hidden = false;
+    if (t.su) { const u = new Date(t.su); if (!isNaN(u)) $('sup').textContent = 'Atualizado ' + u.toLocaleDateString('pt-PT', { day: '2-digit', month: '2-digit' }) + ' · ' + u.toLocaleTimeString('pt-PT', { hour: '2-digit', minute: '2-digit' }); }
+    STEPS.forEach((s, i) => {
+      const r = document.createElement('div'); r.className = 'step ' + (i < st || st === STEPS.length - 1 ? 'done' : i === st ? 'now' : 'todo');
+      r.innerHTML = '<div class="mk">' + (r.classList.contains('done') ? '<svg viewBox="0 0 24 24"><path d="M9.5 16.2 5.3 12l-1.4 1.4 5.6 5.6 11-11-1.4-1.4z"/></svg>' : '') + '</div>';
+      const b = document.createElement('div'); const ttl = document.createElement('div'); ttl.className = 'st'; ttl.textContent = s[0];
+      if (i === st && st < STEPS.length - 1) { const bd = document.createElement('span'); bd.className = 'badge'; bd.textContent = 'Etapa atual'; ttl.appendChild(bd); }
+      const ds = document.createElement('div'); ds.className = 'sd'; ds.textContent = s[1];
+      b.append(ttl, ds); r.appendChild(b); $('steps').appendChild(r);
+    });
+    const rows = [['Duração prevista', t.du], ['Garantia', t.ga], ['Proposta válida até', fmtD(t.va)], ['Notas', t.nt]].filter(x => x[1]);
+    if (t.sd || rows.length) {
+      $('scope').hidden = false; $('sd').textContent = t.sd || '';
+      rows.forEach(([k, v]) => { const dt = document.createElement('dt'); dt.textContent = k; const dd = document.createElement('dd'); dd.textContent = v; $('sdl').append(dt, dd); });
+    }
+    document.querySelector('#r1 span').textContent = 'Serviço'; document.querySelector('#r2 span').textContent = 'Materiais'; document.querySelector('#r3 span').textContent = 'Deslocação';
+    if (t.va && st <= 1) $('pnote').querySelector('p').innerHTML = '<b>Proposta válida até ' + fmtD(t.va) + '.</b> Depois dessa data os valores podem ser revistos.';
+    else $('pnote').hidden = true;
+    $('foot').textContent = 'by Josemar Lima · Obrigado pela confiança';
+  }
   const bus = t.tp === 'autocarro';
   if (isDoc) {
     document.body.classList.add('doc'); document.querySelector('meta[name=theme-color]').content = '#1a0d20';
@@ -369,7 +464,7 @@
   if (bus) { document.body.classList.add('bus'); document.querySelector('meta[name=theme-color]').content = '#0a1f1b'; }
   const eur = n => (Number(n) || 0).toLocaleString('pt-PT', { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' €';
   const first = String(t.cl || '').trim().split(/\s+/)[0];
-  if (!isDoc) {
+  if (!isDoc && !isSvc) {
   $('mode').innerHTML = '<svg viewBox="0 0 24 24">' + (bus ? BUS : PLANE) + '</svg>' + (bus ? 'Autocarro' : 'Avião');
   $('eyebrow').textContent = t.cl ? 'Reserva pendente · ' + t.cl : 'Reserva pendente';
   $('hello').innerHTML = first ? 'Olá ' + first.replace(/[<>&]/g, '') + ', aqui está a <em>proposta</em> da sua viagem' : 'A <em>proposta</em> da sua viagem';
@@ -385,12 +480,18 @@
   $('ref').textContent = q && q.length <= 12 ? q.toUpperCase() : '—';
   $('bg').textContent = t.bg || '—';
   }
-  animateRoute(isDoc ? 'doc' : bus ? 'bus' : 'plane');
+  if (isSvc) animateRoute('svc', st / (STEPS.length - 1), STEPS.map((_, i) => i / (STEPS.length - 1)).slice(1, -1));
+  else animateRoute(isDoc ? 'doc' : bus ? 'bus' : 'plane');
   const v = [t.v, t.to, t.tc, t.ds].map(x => Number(x) || 0);
   $('v1').textContent = eur(v[0]); $('v2').textContent = eur(v[1]); $('v3').textContent = eur(v[2]); $('v4').textContent = '−' + eur(v[3]);
   $('r2').hidden = !v[1]; $('r3').hidden = !v[2]; $('r4').hidden = !v[3];
   const vis = ['r1','r2','r3','r4'].filter(id => !$(id).hidden); $(vis[vis.length - 1]).classList.add('last');
-  $('total').textContent = eur(v[0] + v[1] + v[2] - v[3]);
+  const base = v[0] + v[1] + v[2] - v[3], iv = isSvc ? (Number(t.iv) || 0) : 0;
+  if (isSvc && iv) {
+    $('rSub').hidden = false; $('vSub').textContent = eur(base); $('rIva').hidden = false; $('lIva').textContent = 'IVA (' + iv + '%)'; $('vIva').textContent = eur(base * iv / 100);
+    vis.forEach(id => $(id).classList.remove('last')); $('rIva').classList.add('last');
+  }
+  $('total').textContent = eur(base + base * iv / 100);
   if (t.ph) {
     $('photo').src = t.ph; $('photo').alt = 'Fotografia de ' + (t.d || 'destino');
     $('dname').innerHTML = ''; $('dname').append(document.createTextNode(t.d || ''));
@@ -400,7 +501,7 @@
   }
   if (bus) $('carrier').textContent = 'transportadora';
   if (bus) $('foot').textContent = 'by Josemar Lima · Boa viagem de autocarro';
-  document.title = 'Trip Easy Fast · ' + (isDoc ? (t.dn || 'Documentos') : (t.o || '') + ' → ' + (t.d || ''));
+  document.title = 'Trip Easy Fast · ' + (isSvc ? (t.sn || 'Serviço') : isDoc ? (t.dn || 'Documentos') : (t.o || '') + ' → ' + (t.d || ''));
   function execCopy(text) {
     // método clássico, compatível com iPhone (Safari, Brave, Chrome) e apps com navegador interno
     const ta = document.createElement('textarea');
