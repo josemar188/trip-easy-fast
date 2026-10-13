@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Trip Easy Fast</title>
+<title>Easy &amp; Fast</title>
 <meta name="description" content="Proposta da sua viagem, com valores e meios de pagamento.">
-<meta property="og:title" content="Trip Easy Fast · Proposta de viagem">
+<meta property="og:title" content="Easy &amp; Fast · Proposta de viagem">
 <meta property="og:description" content="Consulte os detalhes, os valores e os meios de pagamento da sua viagem.">
 <meta name="theme-color" content="#0b1626">
 <meta name="robots" content="noindex">
@@ -40,6 +40,7 @@
   .brand { display: flex; align-items: baseline; gap: 8px; }
   .brand b { font-family: var(--display); font-style: italic; font-weight: 500; font-size: 22px; letter-spacing: -.2px; }
   .brand b span { font-family: var(--body); font-style: normal; font-weight: 800; font-size: 11px; letter-spacing: 3px; color: var(--gold); margin-left: 4px; vertical-align: 3px; }
+  .brand b .amp { font-family: var(--display); font-style: italic; font-weight: 400; font-size: 1em; letter-spacing: 0; color: var(--gold); margin: 0 1px; vertical-align: 0; }
   .brand small { font-size: 11px; letter-spacing: 1.5px; color: rgba(255,255,255,.6); }
   .brand b { white-space: nowrap; }
   @media (max-width: 440px) { .brand { flex-direction: column; align-items: flex-start; gap: 0; } .brand small { font-size: 10px; } }
@@ -212,7 +213,7 @@
   <header class="hero">
     <div class="col">
       <div class="top">
-        <div class="brand"><b>Trip Easy<span>FAST</span></b><small>by Josemar Lima</small></div>
+        <div class="brand"><b>Easy <span class="amp">&amp;</span> Fast</b><small>by Josemar Lima</small></div>
         <div class="mode" id="mode"></div>
       </div>
       <div class="hello">
@@ -298,7 +299,7 @@
     </figure>
   </main>
 
-  <footer class="col"><b>Trip Easy Fast</b><p id="foot">by Josemar Lima · Boa viagem</p></footer>
+  <footer class="col"><b>Easy &amp; Fast</b><p id="foot">by Josemar Lima · Boa viagem</p></footer>
 
 <script src="config.js"></script>
 <script>
@@ -381,7 +382,7 @@
     document.querySelector('.route').hidden = true; $('mode').hidden = true;
     $('eyebrow').textContent = 'Ligação indisponível';
     $('hello').innerHTML = 'Não encontrámos <em>esta viagem</em>';
-    document.title = 'Trip Easy Fast'; return;
+    document.title = 'Easy & Fast'; return;
   }
   const isDoc = t.tp === 'documentos';
   const isSvc = t.tp === 'servico';
@@ -516,7 +517,7 @@
     document.querySelector('.pay').closest('section').querySelector('.sh span').textContent = n === 1 ? '1 opção' : n + ' opções';
     if (!n) document.querySelector('.pay').innerHTML = '<div class="card p"><div class="t" style="grid-column:1/-1">Fale com ' + nm.replace(/[<>&]/g, '') + ' para combinar o pagamento.</div></div>';
   }
-  document.title = 'Trip Easy Fast · ' + (isSvc ? (t.sn || 'Serviço') : isDoc ? (t.dn || 'Documentos') : (t.o || '') + ' → ' + (t.d || ''));
+  document.title = 'Easy & Fast · ' + (isSvc ? (t.sn || 'Serviço') : isDoc ? (t.dn || 'Documentos') : (t.o || '') + ' → ' + (t.d || ''));
   function execCopy(text) {
     // método clássico, compatível com iPhone (Safari, Brave, Chrome) e apps com navegador interno
     const ta = document.createElement('textarea');
