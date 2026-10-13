@@ -211,8 +211,25 @@
     </section>
 
     <section>
-      <h2>Viagens e serviços</h2>
+      <h2 id="lt">Viagens e serviços</h2>
       <div id="list"><p class="hint">A carregar…</p></div>
+    </section>
+
+    <section id="acc">
+      <h2>A minha conta</h2>
+      <p class="notify" id="accw" hidden>Adicione o seu IBAN ou MB WAY. É isso que os seus clientes veem para pagar.</p>
+      <div class="g" style="margin-top:12px">
+        <label class="w2">Nome que os clientes veem<input id="pn" autocomplete="name" placeholder="Ex.: Ana Costa"></label>
+        <label class="w2">IBAN<input id="pi" autocomplete="off" placeholder="PT50 0000 0000 0000 0000 0000 0"></label>
+        <label class="w2">MB WAY (telemóvel)<input id="pm" type="tel" inputmode="tel" autocomplete="off" placeholder="+351 9xx xxx xxx"></label>
+      </div>
+      <div class="btns"><button class="b pri" id="psv" type="button">Guardar os meus dados</button></div>
+      <p class="hint" id="pok" hidden></p>
+      <div class="g" style="margin-top:18px;padding-top:18px;border-top:1px solid #edf1f6">
+        <label class="w2">Nova palavra-passe<input id="np" type="password" autocomplete="new-password" minlength="8" placeholder="Mínimo 8 caracteres"></label>
+      </div>
+      <div class="btns"><button class="b" id="npb" type="button">Alterar palavra-passe</button></div>
+      <p class="hint" id="npok" hidden></p>
     </section>
   </div>
 
@@ -421,10 +438,25 @@
     try { trips = await api('trips?select=code,data,created_at&order=created_at.desc'); render(); }
     catch (e) { el('list').textContent = ''; const p = document.createElement('p'); p.className = 'err'; p.textContent = 'Não foi possível carregar as viagens.'; el('list').appendChild(p); }
   }
+  let me = null;
+  const ALL = ['aviao', 'autocarro', 'documentos', 'servico'];
+  async function loadMe() {
+    try { const r = await api('profiles?select=user_id,name,iban,mbway,tabs'); me = r[0] || null; } catch (e) { me = null; }
+    const tabs = me && me.tabs && me.tabs.length ? me.tabs.filter(x => ALL.includes(x)) : ['servico'];
+    document.querySelectorAll('.seg button').forEach(b => b.hidden = !tabs.includes(b.dataset.tp));
+    document.querySelector('.seg').hidden = tabs.length < 2;
+    document.querySelector('.seg').style.gridTemplateColumns = 'repeat(' + Math.min(tabs.length, innerWidth <= 480 ? 2 : 4) + ', 1fr)';
+    if (!tabs.includes(tp)) setTp(tabs[0]);
+    const onlySvc = tabs.length === 1 && tabs[0] === 'servico';
+    el('sub').textContent = (onlySvc ? 'Painel de serviços' : 'Painel de viagens') + (me && me.name ? ' · ' + me.name : '');
+    el('lt').textContent = onlySvc ? 'Os meus serviços' : 'Viagens e serviços';
+    el('pn').value = me ? me.name || '' : ''; el('pi').value = me ? me.iban || '' : ''; el('pm').value = me ? me.mbway || '' : '';
+    el('accw').hidden = !!(me && (me.iban || me.mbway));
+  }
   function show() {
     const cfg = !U || !K || /SEU-PROJETO|SUA-CHAVE/.test(U + K);
     el('cfg').hidden = !cfg; el('login').hidden = cfg || !!ses; el('app').hidden = cfg || !ses; el('out').hidden = cfg || !ses;
-    if (!cfg && ses) load();
+    if (!cfg && ses) { loadMe(); load(); }
   }
 
   ids.forEach(i => el(i).addEventListener('input', () => el('tot').textContent = eur(tot(read()))));
@@ -433,7 +465,25 @@
     try { await auth('password', { email: el('em').value.trim(), password: el('pw').value }); el('pw').value = ''; show(); }
     catch (err) { msg('lerr', err.message); }
   });
-  el('out').addEventListener('click', () => { keep(null); show(); });
+  el('out').addEventListener('click', () => { keep(null); me = null; show(); });
+  el('psv').addEventListener('click', async () => {
+    if (!me) return;
+    const body = { name: el('pn').value.trim(), iban: el('pi').value.trim().toUpperCase(), mbway: el('pm').value.trim(), updated_at: new Date().toISOString() };
+    const iban = body.iban.replace(/\s/g, '');
+    if (iban && !/^[A-Z]{2}\d{2}[A-Z0-9]{10,30}$/.test(iban)) { el('pok').hidden = false; el('pok').textContent = 'O IBAN não parece válido. Confirme as letras e os números.'; return; }
+    try { await api('profiles?user_id=eq.' + me.user_id, { method: 'PATCH', headers: { Prefer: 'return=minimal' }, body: JSON.stringify(body) }); Object.assign(me, body); el('pok').textContent = 'Dados guardados. Os seus links já mostram estes dados de pagamento.'; el('accw').hidden = !!(body.iban || body.mbway); el('sub').textContent = el('sub').textContent.split(' · ')[0] + (body.name ? ' · ' + body.name : ''); }
+    catch (e) { el('pok').textContent = 'Não foi possível guardar. Tente outra vez.'; }
+    el('pok').hidden = false;
+  });
+  el('npb').addEventListener('click', async () => {
+    const p = el('np').value; el('npok').hidden = false;
+    if (p.length < 8) { el('npok').textContent = 'A palavra-passe precisa de pelo menos 8 caracteres.'; return; }
+    try {
+      await fresh();
+      const r = await fetch(U + '/auth/v1/user', { method: 'PUT', headers: { apikey: K, Authorization: 'Bearer ' + ses.a, 'Content-Type': 'application/json' }, body: JSON.stringify({ password: p }) });
+      if (!r.ok) throw 0; el('np').value = ''; el('npok').textContent = 'Palavra-passe alterada.';
+    } catch (e) { el('npok').textContent = 'Não foi possível alterar. Tente outra vez.'; }
+  });
   el('nw').addEventListener('click', () => { setEdit(null); el('res').hidden = true; docs = []; dir = null; renderDocs(); });
   el('cp').addEventListener('click', () => copy(el('link').textContent, el('cp'), 'Copiar link'));
   el('sv').addEventListener('click', async () => {
@@ -447,7 +497,7 @@
       const changed = t.tp === 'servico' && editing && stageSaved !== null && stageSaved !== t.st;
       if (t.tp === 'servico') { stageSaved = t.st; stageAt = t.su; }
       showLink(code, t, changed); setEdit(code); await load();
-    } catch (e) { msg('serr', e.message); }
+    } catch (e) { msg('serr', /\(40[13]\)/.test(e.message) ? 'A sua conta não tem permissão para criar este tipo de serviço.' : e.message); }
     el('sv').disabled = false;
   });
   document.querySelectorAll('.seg button').forEach(b => b.addEventListener('click', () => setTp(b.dataset.tp)));
