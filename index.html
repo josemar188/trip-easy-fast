@@ -501,6 +501,21 @@
   }
   if (bus) $('carrier').textContent = 'transportadora';
   if (bus) $('foot').textContent = 'by Josemar Lima · Boa viagem de autocarro';
+  // Dados de pagamento e nome de quem criou o link (contas de parceiros)
+  if (t.pay) {
+    const nm = (t.pay.name || '').trim() || 'Josemar Lima';
+    document.querySelector('.brand small').textContent = 'by ' + nm;
+    $('foot').textContent = $('foot').textContent.replace('Josemar Lima', nm);
+    const cards = document.querySelectorAll('.pay .p'), vals = [t.pay.iban, t.pay.mbway];
+    let n = 0;
+    cards.forEach((c, i) => {
+      const val = (vals[i] || '').trim();
+      if (!val) { c.hidden = true; return; }
+      n++; c.querySelector('.vv').textContent = val; c.querySelector('.copy').dataset.v = val.replace(/\s/g, '');
+    });
+    document.querySelector('.pay').closest('section').querySelector('.sh span').textContent = n === 1 ? '1 opção' : n + ' opções';
+    if (!n) document.querySelector('.pay').innerHTML = '<div class="card p"><div class="t" style="grid-column:1/-1">Fale com ' + nm.replace(/[<>&]/g, '') + ' para combinar o pagamento.</div></div>';
+  }
   document.title = 'Trip Easy Fast · ' + (isSvc ? (t.sn || 'Serviço') : isDoc ? (t.dn || 'Documentos') : (t.o || '') + ' → ' + (t.d || ''));
   function execCopy(text) {
     // método clássico, compatível com iPhone (Safari, Brave, Chrome) e apps com navegador interno
